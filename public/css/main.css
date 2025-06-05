@@ -1,0 +1,676 @@
+/* =============================================================================
+   EVENT MANAGER - MAIN STYLESHEET
+   ============================================================================= */
+
+/* =============================================================================
+   GLOBAL STYLES
+   ============================================================================= */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f5f7fa;
+  color: #333;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Bookings page container override */
+.bookings-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* =============================================================================
+   HEADER STYLES
+   ============================================================================= */
+
+.header {
+  color: white;
+  padding: 2rem 0;
+  margin-bottom: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Attendee page header */
+.header.attendee {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+}
+
+/* Organiser and bookings page header */
+.header.organiser {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.header h1 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Bookings page header h1 override */
+.header.bookings h1 {
+  font-size: 2rem;
+}
+
+.header p {
+  text-align: center;
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+/* Bookings page header */
+.header.bookings {
+  padding: 2rem;
+}
+
+/* =============================================================================
+   NAVIGATION STYLES
+   ============================================================================= */
+
+.nav-links {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.nav-links a {
+  color: white;
+  padding: 12px 24px;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: background-color 0.3s;
+  margin-right: 1rem;
+}
+
+/* Attendee page nav links */
+.nav-links a.attendee {
+  background: #667eea;
+}
+
+.nav-links a.attendee:hover {
+  background: #5a6fd8;
+}
+
+/* Organiser page nav links */
+.nav-links a.organiser {
+  background: #28a745;
+}
+
+.nav-links a.organiser:hover {
+  background: #218838;
+}
+
+/* Bookings page nav links */
+.nav-links a.bookings {
+  background: #6c757d;
+  padding: 10px 20px;
+}
+
+.nav-links a.bookings:hover {
+  background: #5a6268;
+}
+
+/* =============================================================================
+   ALERT STYLES
+   ============================================================================= */
+
+.alert {
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  font-weight: 500;
+}
+
+.alert-success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.alert-error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+/* =============================================================================
+   FORM STYLES
+   ============================================================================= */
+
+.form-section {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.form-section h2 {
+  color: #667eea;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #555;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #e9ecef;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+/* Attendee page form inputs */
+.form-group input {
+  padding: 10px;
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+/* Attendee page input focus */
+.attendee-form input:focus {
+  border-color: #28a745;
+}
+
+textarea {
+  height: 100px;
+  resize: vertical;
+}
+
+/* =============================================================================
+   BUTTON STYLES
+   ============================================================================= */
+
+.btn {
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  height: fit-content;
+}
+
+/* Default button (organiser) */
+.btn.organiser {
+  background: #667eea;
+}
+
+.btn.organiser:hover {
+  background: #5a6fd8;
+}
+
+/* Attendee page button */
+.btn.attendee {
+  background: #28a745;
+  padding: 12px 24px;
+}
+
+.btn.attendee:hover {
+  background: #218838;
+}
+
+.btn-danger {
+  background: #dc3545;
+}
+
+.btn-danger:hover {
+  background: #c82333;
+}
+
+/* =============================================================================
+   EVENTS SECTION STYLES
+   ============================================================================= */
+
+.events-section {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.events-section h2 {
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+}
+
+/* Attendee page events section */
+.events-section h2.attendee {
+  color: #28a745;
+}
+
+/* Organiser page events section */
+.events-section h2.organiser {
+  color: #667eea;
+}
+
+.events-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+/* =============================================================================
+   EVENT CARD STYLES
+   ============================================================================= */
+
+.event-card {
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Attendee page event card */
+.event-card.attendee {
+  background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+}
+
+.event-card.attendee::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #28a745, #20c997);
+}
+
+.event-card.attendee:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Organiser page event card */
+.event-card.organiser {
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.event-card.organiser:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.event-header {
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+/* Attendee page event header */
+.event-header.attendee {
+  display: block;
+}
+
+.event-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+/* Organiser page event title */
+.event-title.organiser {
+  font-size: 1.3rem;
+}
+
+.event-description {
+  color: #6c757d;
+  margin-bottom: 1rem;
+  font-style: italic;
+}
+
+.event-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* =============================================================================
+   EVENT INFO STYLES
+   ============================================================================= */
+
+.event-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Organiser page event info */
+.event-info.organiser {
+  margin-bottom: 1rem;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Attendee page info item */
+.info-item.attendee {
+  padding: 0.5rem;
+  background: rgba(40, 167, 69, 0.1);
+  border-radius: 6px;
+}
+
+/* Bookings page info item */
+.info-item.bookings {
+  padding: 0.75rem;
+  background: #f8f9fa;
+  border-radius: 6px;
+}
+
+.info-label {
+  font-weight: 600;
+}
+
+/* Attendee page info label */
+.info-label.attendee {
+  color: #28a745;
+}
+
+/* Organiser and bookings page info label */
+.info-label.organiser {
+  color: #667eea;
+}
+
+/* =============================================================================
+   EVENT CAPACITY STYLES
+   ============================================================================= */
+
+.event-capacity {
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid #28a745;
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.capacity-info {
+  font-weight: 600;
+}
+
+.spots-remaining {
+  color: #28a745;
+  font-size: 0.9rem;
+}
+
+.event-stats {
+  background: white;
+  padding: 1rem;
+  border-radius: 6px;
+  border-left: 4px solid #667eea;
+}
+
+.capacity-stats {
+  background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+  padding: 1.5rem;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+  text-align: center;
+}
+
+.capacity-stats h3 {
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+/* =============================================================================
+   BOOKING SECTION STYLES
+   ============================================================================= */
+
+.booking-section {
+  background: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 2px dashed #dee2e6;
+}
+
+.booking-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 1rem;
+  align-items: end;
+}
+
+/* =============================================================================
+   BOOKINGS SECTION STYLES
+   ============================================================================= */
+
+.bookings-section {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.bookings-section h2 {
+  color: #667eea;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.bookings-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.bookings-table th,
+.bookings-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.bookings-table th {
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #495057;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.bookings-table tr:hover {
+  background-color: #f8f9fa;
+}
+
+.booking-number {
+  background: #667eea;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.booking-date {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+/* =============================================================================
+   INFO GRID STYLES
+   ============================================================================= */
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.event-info-section {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.event-info-section h2 {
+  color: #667eea;
+  margin-bottom: 1rem;
+}
+
+/* =============================================================================
+   NO CONTENT STYLES
+   ============================================================================= */
+
+.no-events {
+  text-align: center;
+  color: #6c757d;
+  font-style: italic;
+  padding: 3rem;
+  border-radius: 12px;
+}
+
+/* Attendee page no events */
+.no-events.attendee {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.no-events.attendee h3 {
+  margin-bottom: 1rem;
+  color: #495057;
+}
+
+/* Organiser page no events */
+.no-events.organiser {
+  padding: 2rem;
+}
+
+.no-bookings {
+  text-align: center;
+  color: #6c757d;
+  font-style: italic;
+  padding: 3rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 2px dashed #dee2e6;
+}
+
+.no-bookings h3 {
+  margin-bottom: 1rem;
+  color: #495057;
+}
+
+/* =============================================================================
+   RESPONSIVE STYLES
+   ============================================================================= */
+
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .booking-form {
+    grid-template-columns: 1fr;
+  }
+
+  .event-info {
+    grid-template-columns: 1fr;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .event-capacity {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .event-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .event-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .bookings-table {
+    font-size: 0.9rem;
+  }
+
+  .bookings-table th,
+  .bookings-table td {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .nav-links a {
+    display: block;
+    margin-bottom: 0.5rem;
+    margin-right: 0;
+    text-align: center;
+  }
+
+  /* Override for attendee page nav links */
+  .nav-links a.attendee {
+    display: inline-block;
+    margin-bottom: 0;
+    margin-right: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .bookings-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}

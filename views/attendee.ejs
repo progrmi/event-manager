@@ -4,280 +4,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Event Manager - Book Events</title>
-    <style>
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
-
-      body {
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #f5f7fa;
-        color: #333;
-        line-height: 1.6;
-      }
-
-      .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 20px;
-      }
-
-      .header {
-        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-        color: white;
-        padding: 2rem 0;
-        margin-bottom: 2rem;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      }
-
-      .header h1 {
-        text-align: center;
-        font-size: 2.5rem;
-        margin-bottom: 0.5rem;
-      }
-
-      .header p {
-        text-align: center;
-        font-size: 1.1rem;
-        opacity: 0.9;
-      }
-
-      .nav-links {
-        text-align: center;
-        margin-bottom: 2rem;
-      }
-
-      .nav-links a {
-        background: #667eea;
-        color: white;
-        padding: 12px 24px;
-        text-decoration: none;
-        border-radius: 6px;
-        font-weight: 500;
-        transition: background-color 0.3s;
-      }
-
-      .nav-links a:hover {
-        background: #5a6fd8;
-      }
-
-      .alert {
-        padding: 1rem;
-        border-radius: 8px;
-        margin-bottom: 2rem;
-        font-weight: 500;
-      }
-
-      .alert-success {
-        background-color: #d4edda;
-        color: #155724;
-        border: 1px solid #c3e6cb;
-      }
-
-      .alert-error {
-        background-color: #f8d7da;
-        color: #721c24;
-        border: 1px solid #f5c6cb;
-      }
-
-      .events-section {
-        background: white;
-        padding: 2rem;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      }
-
-      .events-section h2 {
-        color: #28a745;
-        margin-bottom: 1.5rem;
-        font-size: 1.8rem;
-      }
-
-      .events-grid {
-        display: grid;
-        gap: 1.5rem;
-      }
-
-      .event-card {
-        border: 1px solid #e9ecef;
-        border-radius: 12px;
-        padding: 1.5rem;
-        background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
-        transition: transform 0.2s, box-shadow 0.2s;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .event-card::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: linear-gradient(90deg, #28a745, #20c997);
-      }
-
-      .event-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-      }
-
-      .event-header {
-        margin-bottom: 1rem;
-      }
-
-      .event-title {
-        font-size: 1.4rem;
-        font-weight: 600;
-        color: #333;
-        margin-bottom: 0.5rem;
-      }
-
-      .event-description {
-        color: #6c757d;
-        margin-bottom: 1rem;
-        font-style: italic;
-      }
-
-      .event-info {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
-        margin-bottom: 1.5rem;
-      }
-
-      .info-item {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.5rem;
-        background: rgba(40, 167, 69, 0.1);
-        border-radius: 6px;
-      }
-
-      .info-label {
-        font-weight: 600;
-        color: #28a745;
-      }
-
-      .event-capacity {
-        background: white;
-        padding: 1rem;
-        border-radius: 8px;
-        border-left: 4px solid #28a745;
-        margin-bottom: 1.5rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      .capacity-info {
-        font-weight: 600;
-      }
-
-      .spots-remaining {
-        color: #28a745;
-        font-size: 0.9rem;
-      }
-
-      .booking-section {
-        background: #f8f9fa;
-        padding: 1.5rem;
-        border-radius: 8px;
-        border: 2px dashed #dee2e6;
-      }
-
-      .booking-form {
-        display: grid;
-        grid-template-columns: 1fr 1fr auto;
-        gap: 1rem;
-        align-items: end;
-      }
-
-      .form-group {
-        display: flex;
-        flex-direction: column;
-      }
-
-      .form-group label {
-        margin-bottom: 0.5rem;
-        font-weight: 600;
-        color: #555;
-      }
-
-      .form-group input {
-        padding: 10px;
-        border: 2px solid #e9ecef;
-        border-radius: 6px;
-        font-size: 1rem;
-        transition: border-color 0.3s;
-      }
-
-      .form-group input:focus {
-        outline: none;
-        border-color: #28a745;
-      }
-
-      .btn {
-        background: #28a745;
-        color: white;
-        border: none;
-        padding: 12px 24px;
-        border-radius: 6px;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: background-color 0.3s;
-        height: fit-content;
-      }
-
-      .btn:hover {
-        background: #218838;
-      }
-
-      .no-events {
-        text-align: center;
-        color: #6c757d;
-        font-style: italic;
-        padding: 3rem;
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-        border-radius: 12px;
-      }
-
-      .no-events h3 {
-        margin-bottom: 1rem;
-        color: #495057;
-      }
-
-      @media (max-width: 768px) {
-        .booking-form {
-          grid-template-columns: 1fr;
-        }
-
-        .event-info {
-          grid-template-columns: 1fr;
-        }
-
-        .event-capacity {
-          flex-direction: column;
-          align-items: flex-start;
-          gap: 0.5rem;
-        }
-      }
-    </style>
+    <link rel="stylesheet" href="/css/main.css" />
   </head>
   <body>
     <div class="container">
-      <div class="header">
+      <div class="header attendee">
         <h1>Event Manager</h1>
         <p>Book Your Next Experience</p>
       </div>
 
       <div class="nav-links">
-        <a href="/organiser">Organiser Dashboard</a>
+        <a href="/organiser" class="attendee">Organiser Dashboard</a>
       </div>
 
       <script>
@@ -316,10 +53,10 @@
       </script>
 
       <div class="events-section">
-        <h2>Available Events</h2>
+        <h2 class="attendee">Available Events</h2>
 
         <% if (events.length === 0) { %>
-        <div class="no-events">
+        <div class="no-events attendee">
           <h3>No Events Available</h3>
           <p>There are currently no upcoming events available for booking.</p>
           <p>Check back later or contact the organiser for more information.</p>
@@ -327,8 +64,8 @@
         <% } else { %>
         <div class="events-grid">
           <% events.forEach(event => { %>
-          <div class="event-card">
-            <div class="event-header">
+          <div class="event-card attendee">
+            <div class="event-header attendee">
               <div class="event-title"><%= event.title %></div>
               <% if (event.description) { %>
               <div class="event-description"><%= event.description %></div>
@@ -336,24 +73,24 @@
             </div>
 
             <div class="event-info">
-              <div class="info-item">
-                <span class="info-label">📅 Date:</span>
+              <div class="info-item attendee">
+                <span class="info-label attendee">📅 Date:</span>
                 <span
                   ><%= new Date(event.date).toLocaleDateString('en-US', {
                   weekday: 'long', year: 'numeric', month: 'long', day:
                   'numeric' }) %></span
                 >
               </div>
-              <div class="info-item">
-                <span class="info-label">🕒 Time:</span>
+              <div class="info-item attendee">
+                <span class="info-label attendee">🕒 Time:</span>
                 <span
                   ><%= new Date('2000-01-01T' +
                   event.time).toLocaleTimeString('en-US', { hour: 'numeric',
                   minute: '2-digit', hour12: true }) %></span
                 >
               </div>
-              <div class="info-item">
-                <span class="info-label">📍 Location:</span>
+              <div class="info-item attendee">
+                <span class="info-label attendee">📍 Location:</span>
                 <span><%= event.location %></span>
               </div>
             </div>
@@ -377,7 +114,7 @@
               <form
                 action="/attendee/book/<%= event.id %>"
                 method="POST"
-                class="booking-form"
+                class="booking-form attendee-form"
               >
                 <div class="form-group">
                   <label for="name_<%= event.id %>">Your Name:</label>
@@ -399,7 +136,7 @@
                   />
                 </div>
 
-                <button type="submit" class="btn">Book Now</button>
+                <button type="submit" class="btn attendee">Book Now</button>
               </form>
             </div>
           </div>
