@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Event Manager - Welcome</title>
+    <link rel="stylesheet" href="/css/main.css" />
+    <style>
+      :root {
+        --primary-color: #3498db;
+        --secondary-color: #2c3e50;
+        --success-color: #27ae60;
+        --warning-color: #f39c12;
+        --danger-color: #e74c3c;
+        --background-primary: #ffffff;
+        --background-secondary: #f8f9fa;
+        --text-primary: #2c3e50;
+        --text-secondary: #6c757d;
+        --border-color: #e9ecef;
+        --shadow-color: rgba(0, 0, 0, 0.1);
+      }
+
+      [data-theme="dark"] {
+        --primary-color: #3498db;
+        --secondary-color: #34495e;
+        --success-color: #27ae60;
+        --warning-color: #f39c12;
+        --danger-color: #e74c3c;
+        --background-primary: #1a1a1a;
+        --background-secondary: #2d2d2d;
+        --text-primary: #ffffff;
+        --text-secondary: #b0b0b0;
+        --border-color: #404040;
+        --shadow-color: rgba(255, 255, 255, 0.1);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background: var(--background-primary);
+        color: var(--text-primary);
+        min-height: 100vh;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+
+      .header {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        color: white;
+        padding: 2rem 0;
+        text-align: center;
+        position: relative;
+        box-shadow: 0 4px 20px var(--shadow-color);
+      }
+
+      .header-controls {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+      }
+
+      .theme-toggle {
+        background: rgba(255, 255, 255, 0.2);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+      }
+
+      .theme-toggle:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+      }
+
+      .logout-btn {
+        background: var(--danger-color);
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      .logout-btn:hover {
+        background: #c0392b;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+      }
+
+      .header h1 {
+        font-size: 3rem;
+        margin-bottom: 0.5rem;
+        font-weight: 700;
+      }
+
+      .header p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+      }
+
+      .welcome-section {
+        padding: 4rem 0;
+        text-align: center;
+      }
+
+      .welcome-title {
+        font-size: 2.5rem;
+        color: var(--text-primary);
+        margin-bottom: 1rem;
+        font-weight: 700;
+      }
+
+      .welcome-subtitle {
+        font-size: 1.2rem;
+        color: var(--text-secondary);
+        margin-bottom: 3rem;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.6;
+      }
+
+      .user-info {
+        background: var(--background-secondary);
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin-bottom: 3rem;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 4px 15px var(--shadow-color);
+      }
+
+      .user-info h3 {
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+      }
+
+      .user-info p {
+        color: var(--text-secondary);
+        margin: 0.25rem 0;
+      }
+
+      .navigation-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+      }
+
+      .nav-card {
+        background: var(--background-secondary);
+        border: 2px solid var(--border-color);
+        border-radius: 16px;
+        padding: 2.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 20px var(--shadow-color);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .nav-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--primary-color),
+          transparent
+        );
+        transform: translateX(-100%);
+        transition: transform 0.6s ease;
+      }
+
+      .nav-card:hover::before {
+        transform: translateX(100%);
+      }
+
+      .nav-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 40px var(--shadow-color);
+        border-color: var(--primary-color);
+      }
+
+      .nav-card.organiser {
+        border-color: var(--success-color);
+      }
+
+      .nav-card.organiser:hover {
+        border-color: var(--success-color);
+      }
+
+      .nav-card.organiser::before {
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--success-color),
+          transparent
+        );
+      }
+
+      .nav-card.attendee {
+        border-color: var(--primary-color);
+      }
+
+      .nav-card-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        display: block;
+      }
+
+      .nav-card h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: var(--text-primary);
+      }
+
+      .nav-card p {
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+        line-height: 1.6;
+      }
+
+      .nav-btn {
+        background: linear-gradient(135deg, var(--primary-color), #2980b9);
+        color: white;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 25px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .nav-btn.organiser {
+        background: linear-gradient(135deg, var(--success-color), #229954);
+      }
+
+      .nav-btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.5s ease;
+      }
+
+      .nav-btn:hover::before {
+        left: 100%;
+      }
+
+      .nav-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3);
+      }
+
+      .nav-btn.organiser:hover {
+        box-shadow: 0 8px 25px rgba(39, 174, 96, 0.3);
+      }
+
+      .features-section {
+        background: var(--background-secondary);
+        padding: 3rem 0;
+        margin-top: 3rem;
+        border-radius: 20px;
+        border: 1px solid var(--border-color);
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+      }
+
+      .feature-item {
+        text-align: center;
+        padding: 1.5rem;
+      }
+
+      .feature-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        display: block;
+      }
+
+      .feature-item h4 {
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+      }
+
+      .feature-item p {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+
+      .guest-access {
+        background: linear-gradient(135deg, var(--warning-color), #e67e22);
+        color: white;
+        padding: 2rem;
+        border-radius: 16px;
+        text-align: center;
+        margin-top: 2rem;
+      }
+
+      .guest-access h3 {
+        margin-bottom: 1rem;
+      }
+
+      .guest-access p {
+        margin-bottom: 1.5rem;
+        opacity: 0.9;
+      }
+
+      .guest-btn {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 12px 24px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 25px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        backdrop-filter: blur(10px);
+      }
+
+      .guest-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+      }
+
+      @media (max-width: 768px) {
+        .header h1 {
+          font-size: 2rem;
+        }
+
+        .welcome-title {
+          font-size: 2rem;
+        }
+
+        .navigation-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .header-controls {
+          position: static;
+          justify-content: center;
+          margin-top: 1rem;
+        }
+
+        .container {
+          padding: 0 1rem;
+        }
+      }
+    </style>
+    <script>
+      // Initialize theme before page load to prevent flash
+      (function() {
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme === "dark") {
+          document.documentElement.setAttribute("data-theme", "dark");
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="header">
+      <div class="header-controls">
+        <button class="theme-toggle" onclick="toggleTheme()">
+          <span id="theme-icon">🌙</span> <span id="theme-text">Dark Mode</span>
+        </button>
+        <a href="/auth/logout" class="logout-btn"> 🚪 Logout </a>
+      </div>
+      <div class="container">
+        <h1>🎫 Event Manager</h1>
+        <p>Your Complete Event Management Solution</p>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="welcome-section">
+        <h2 class="welcome-title">Welcome Back!</h2>
+        <p class="welcome-subtitle">
+          Choose how you'd like to interact with our event management system.
+          Whether you're organizing events or looking to attend them, we've got
+          you covered.
+        </p>
+
+        <div class="user-info" id="user-info" <% if (!user) { %>style="display: none"<% } %>>
+          <h3>👤 Your Account</h3>
+          <% if (user) { %>
+            <p><strong>Name:</strong> <%= user.name %></p>
+            <p><strong>Email:</strong> <%= user.email %></p>
+            <p><strong>Role:</strong> <%= user.role %></p>
+          <% } %>
+        </div>
+
+        <div class="navigation-grid">
+          <div class="nav-card organiser">
+            <span class="nav-card-icon">🎪</span>
+            <h3>Event Organiser</h3>
+            <p>
+              Create, manage, and monitor your events. Track bookings, manage
+              attendees, and get insights into your event performance.
+            </p>
+            <a href="/organiser" class="nav-btn organiser">
+              🚀 Organiser Dashboard
+            </a>
+          </div>
+
+          <div class="nav-card attendee">
+            <span class="nav-card-icon">👥</span>
+            <h3>Event Attendee</h3>
+            <p>
+              Discover exciting events, book your spots, and manage your
+              bookings. Find events that match your interests and never miss
+              out!
+            </p>
+            <a href="/attendee" class="nav-btn"> 🎟️ Browse Events </a>
+          </div>
+        </div>
+
+        <div class="guest-access">
+          <h3>🌟 Guest Access</h3>
+          <p>
+            Not logged in? You can still browse available events as a guest, but
+            you'll need to create an account to make bookings.
+          </p>
+          <a href="/attendee" class="guest-btn"> 👀 View Events as Guest </a>
+        </div>
+      </div>
+
+      <div class="features-section">
+        <div class="container">
+          <h2
+            style="
+              text-align: center;
+              color: var(--text-primary);
+              margin-bottom: 1rem;
+            "
+          >
+            ✨ Platform Features
+          </h2>
+          <p
+            style="
+              text-align: center;
+              color: var(--text-secondary);
+              margin-bottom: 2rem;
+            "
+          >
+            Everything you need for successful event management
+          </p>
+
+          <div class="features-grid">
+            <div class="feature-item">
+              <span class="feature-icon">📅</span>
+              <h4>Easy Event Creation</h4>
+              <p>Create events in minutes with our intuitive form interface</p>
+            </div>
+
+            <div class="feature-item">
+              <span class="feature-icon">📊</span>
+              <h4>Real-time Analytics</h4>
+              <p>Track bookings, attendance, and event performance</p>
+            </div>
+
+            <div class="feature-item">
+              <span class="feature-icon">🎯</span>
+              <h4>Smart Booking System</h4>
+              <p>Automated capacity management and booking confirmations</p>
+            </div>
+
+            <div class="feature-item">
+              <span class="feature-icon">📱</span>
+              <h4>Mobile Responsive</h4>
+              <p>Access your events from any device, anywhere</p>
+            </div>
+
+            <div class="feature-item">
+              <span class="feature-icon">🔒</span>
+              <h4>Secure & Reliable</h4>
+              <p>Your data is protected with enterprise-grade security</p>
+            </div>
+
+            <div class="feature-item">
+              <span class="feature-icon">⚡</span>
+              <h4>Lightning Fast</h4>
+              <p>Optimized performance for the best user experience</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Theme toggle functionality with error handling
+      function toggleTheme() {
+        try {
+          const html = document.documentElement;
+          const themeIcon = document.getElementById("theme-icon");
+          const themeText = document.getElementById("theme-text");
+          const isDark = html.getAttribute("data-theme") === "dark";
+
+          if (isDark) {
+            html.removeAttribute("data-theme");
+            themeIcon.textContent = "🌙";
+            themeText.textContent = "Dark Mode";
+          } else {
+            html.setAttribute("data-theme", "dark");
+            themeIcon.textContent = "☀️";
+            themeText.textContent = "Light Mode";
+          }
+          
+          localStorage.setItem("theme", isDark ? "light" : "dark");
+        } catch (error) {
+          console.error("Theme toggle failed:", error);
+        }
+      }
+
+      // Enhanced DOM content loaded handler
+      document.addEventListener("DOMContentLoaded", function () {
+        // Initialize theme
+        const savedTheme = localStorage.getItem("theme");
+        const themeIcon = document.getElementById("theme-icon");
+        const themeText = document.getElementById("theme-text");
+
+        if (savedTheme === "dark") {
+          themeIcon.textContent = "☀️";
+          themeText.textContent = "Light Mode";
+        }
+
+        // Optimize animations
+        const cards = document.querySelectorAll(".nav-card");
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                entry.target.style.animation = "slideInUp 0.6s ease forwards";
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.1 }
+        );
+
+        cards.forEach((card, index) => {
+          card.style.animationDelay = `${index * 0.15}s`;
+          observer.observe(card);
+        });
+      });
+
+      // Simplified animation styles
+      const style = document.createElement("style");
+      style.textContent = `
+        @keyframes slideInUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .nav-card { opacity: 0; }
+      `;
+      document.head.appendChild(style);
+    </script>
+  </body>
+</html>

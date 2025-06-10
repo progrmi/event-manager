@@ -5,20 +5,20 @@ const {
   authenticateToken,
   requireOrganiser,
   addUserToLocals,
+  optionalAuth,
 } = require("../middleware/auth");
 
 // Apply user info to all routes
 router.use(addUserToLocals);
 
 // Home page - redirect based on authentication status
-router.get("/", (req, res) => {
+router.get("/", optionalAuth, (req, res) => {
   if (req.user) {
-    // Redirect based on user role
-    if (req.user.role === "organiser") {
-      res.redirect("/organiser");
-    } else {
-      res.redirect("/attendee");
-    }
+    // User is authenticated, render home page with user info
+    res.render("home", {
+      user: req.user,
+      title: "Event Manager - Welcome",
+    });
   } else {
     // Not authenticated, redirect to login
     res.redirect("/auth/login");

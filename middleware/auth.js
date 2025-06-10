@@ -74,15 +74,35 @@ const redirectIfAuthenticated = (req, res, next) => {
   if (token) {
     try {
       const decoded = jwt.verify(token, JWT_SECRET);
-      if (decoded.role === "organiser") {
-        return res.redirect("/organiser");
-      } else {
-        return res.redirect("/attendee");
-      }
+      // Redirect to home page instead of role-specific pages
+      return res.redirect("/");
     } catch (error) {
       // Token invalid, clear it and continue
       res.clearCookie("token");
     }
+  }
+
+  next();
+};
+
+// New middleware to require authentication but allow access to home page
+const optionalAuth = (req, res, next) => {
+  const token = req?.cookies?.token || null;
+
+  if (token) {
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET);
+      req.user = decoded;
+      res.locals.user = decoded;
+    } catch (error) {
+      // Token invalid, clear it
+      res.clearCookie("token");
+      req.user = null;
+      res.locals.user = null;
+    }
+  } else {
+    req.user = null;
+    res.locals.user = null;
   }
 
   next();
@@ -94,4 +114,5 @@ module.exports = {
   requireAttendee,
   addUserToLocals,
   redirectIfAuthenticated,
+  optionalAuth,
 };

@@ -13,6 +13,19 @@ const db = new sqlite3.Database(dbPath, (err) => {
 });
 
 function initializeDatabase() {
+  // Enable foreign key support
+  db.run("PRAGMA foreign_keys = ON;");
+
+  // Users table
+  db.run(`CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        email TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL,
+        role TEXT NOT NULL CHECK(role IN ('organiser', 'attendee')) DEFAULT 'attendee',
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`);
+
   // Events table
   db.run(`CREATE TABLE IF NOT EXISTS events (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -30,10 +43,11 @@ function initializeDatabase() {
   db.run(`CREATE TABLE IF NOT EXISTS bookings (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         event_id INTEGER,
-        attendee_name TEXT NOT NULL,
-        attendee_email TEXT NOT NULL,
+        user_id INTEGER,
         booking_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (event_id) REFERENCES events (id)
+        FOREIGN KEY (event_id) REFERENCES events (id) ON DELETE CASCADE,
+        FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+        UNIQUE(event_id, user_id)
     )`);
 }
 
