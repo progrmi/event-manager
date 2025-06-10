@@ -401,7 +401,7 @@
     </style>
     <script>
       // Initialize theme before page load to prevent flash
-      (function () {
+      (function() {
         const savedTheme = localStorage.getItem("theme");
         if (savedTheme === "dark") {
           document.documentElement.setAttribute("data-theme", "dark");
@@ -432,11 +432,12 @@
           you covered.
         </p>
 
-        <div class="user-info" id="user-info">
+        <div class="user-info" id="user-info" <% if (!user) { %>style="display: none"<% } %>>
           <h3>👤 Your Account</h3>
           <% if (user) { %>
-          <p><strong>Name:</strong> <%= user.name %></p>
-          <p><strong>Email:</strong> <%= user.email %></p>
+            <p><strong>Name:</strong> <%= user.name %></p>
+            <p><strong>Email:</strong> <%= user.email %></p>
+            <p><strong>Role:</strong> <%= user.role %></p>
           <% } %>
         </div>
 
@@ -463,6 +464,15 @@
             </p>
             <a href="/attendee" class="nav-btn"> 🎟️ Browse Events </a>
           </div>
+        </div>
+
+        <div class="guest-access">
+          <h3>🌟 Guest Access</h3>
+          <p>
+            Not logged in? You can still browse available events as a guest, but
+            you'll need to create an account to make bookings.
+          </p>
+          <a href="/attendee" class="guest-btn"> 👀 View Events as Guest </a>
         </div>
       </div>
 
@@ -526,38 +536,6 @@
           </div>
         </div>
       </div>
-      <footer class="footer">
-        <div class="footer-content">
-          <div class="footer-section">
-            <h3>About Event Manager</h3>
-            <p>
-              Your trusted platform for event planning and management. Create,
-              manage, and attend events with ease.
-            </p>
-          </div>
-          <div class="footer-section">
-            <h3>Quick Links</h3>
-            <ul class="footer-links">
-              <li><a href="/attendee">Events</a></li>
-              <li><a href="/organiser">Organiser Dashboard</a></li>
-            </ul>
-          </div>
-          <div class="footer-section">
-            <h3>Contact</h3>
-            <ul class="footer-links">
-              <li>
-                <a href="mailto:support@eventmanager.com"
-                  >support@eventmanager.com</a
-                >
-              </li>
-              <li><a href="tel:+1234567890">+1 (234) 567-890</a></li>
-            </ul>
-          </div>
-        </div>
-        <div class="footer-bottom">
-          <p>&copy; 2025 Event Manager. All rights reserved.</p>
-        </div>
-      </footer>
     </div>
 
     <script>
@@ -578,7 +556,7 @@
             themeIcon.textContent = "☀️";
             themeText.textContent = "Light Mode";
           }
-
+          
           localStorage.setItem("theme", isDark ? "light" : "dark");
         } catch (error) {
           console.error("Theme toggle failed:", error);
@@ -601,7 +579,7 @@
         const cards = document.querySelectorAll(".nav-card");
         const observer = new IntersectionObserver(
           (entries) => {
-            entries.forEach((entry) => {
+            entries.forEach(entry => {
               if (entry.isIntersecting) {
                 entry.target.style.animation = "slideInUp 0.6s ease forwards";
                 observer.unobserve(entry.target);

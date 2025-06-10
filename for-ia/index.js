@@ -3,6 +3,7 @@ const router = express.Router();
 const db = require("../db");
 const {
   authenticateToken,
+  requireOrganiser,
   addUserToLocals,
   optionalAuth,
 } = require("../middleware/auth");
@@ -25,7 +26,7 @@ router.get("/", optionalAuth, (req, res) => {
 });
 
 // Organiser page - for creating and managing events (requires authentication + organiser role)
-router.get("/organiser", authenticateToken, (req, res) => {
+router.get("/organiser", authenticateToken, requireOrganiser, (req, res) => {
   db.all("SELECT * FROM events ORDER BY date ASC", (err, events) => {
     if (err) {
       console.error(err);
@@ -36,62 +37,78 @@ router.get("/organiser", authenticateToken, (req, res) => {
 });
 
 // Create new event (requires authentication + organiser role)
-router.post("/organiser/create", authenticateToken, (req, res) => {
-  const { title, description, date, time, location, max_attendees } = req.body;
-  const stmt =
-    db.prepare(`INSERT INTO events (title, description, date, time, location, max_attendees) 
+router.post(
+  "/organiser/create",
+  authenticateToken,
+  requireOrganiser,
+  (req, res) => {
+    const { title, description, date, time, location, max_attendees } =
+      req.body;
+    const stmt =
+      db.prepare(`INSERT INTO events (title, description, date, time, location, max_attendees) 
                           VALUES (?, ?, ?, ?, ?, ?)`);
 
-  stmt.run(
-    [title, description, date, time, location, max_attendees],
-    function (err) {
-      if (err) {
-        console.error("Error creating event:", err);
-      }
-      res.redirect("/organiser");
-    }
-  );
-  stmt.finalize();
-});
-
-// Delete event (requires authentication + organiser role)
-router.post("/organiser/delete/:id", authenticateToken, (req, res) => {
-  const eventId = req.params.id;
-
-  db.run("DELETE FROM bookings WHERE event_id = ?", [eventId], (err) => {
-    if (err) {
-      console.error("Error deleting bookings:", err);
-    }
-    db.run("DELETE FROM events WHERE id = ?", [eventId], (err) => {
-      if (err) {
-        console.error("Error deleting event:", err);
-      }
-      res.redirect("/organiser");
-    });
-  });
-});
-
-// View event bookings (requires authentication + organiser role)
-router.get("/organiser/bookings/:id", authenticateToken, (req, res) => {
-  const eventId = req.params.id;
-
-  db.get("SELECT * FROM events WHERE id = ?", [eventId], (err, event) => {
-    if (err || !event) {
-      return res.redirect("/organiser");
-    }
-    db.all(
-      "SELECT * FROM bookings WHERE event_id = ? ORDER BY booking_date DESC",
-      [eventId],
-      (err, bookings) => {
+    stmt.run(
+      [title, description, date, time, location, max_attendees],
+      function (err) {
         if (err) {
-          console.error(err);
-          bookings = [];
+          console.error("Error creating event:", err);
         }
-        res.render("bookings", { event: event, bookings: bookings });
+        res.redirect("/organiser");
       }
     );
-  });
-});
+    stmt.finalize();
+  }
+);
+
+// Delete event (requires authentication + organiser role)
+router.post(
+  "/organiser/delete/:id",
+  authenticateToken,
+  requireOrganiser,
+  (req, res) => {
+    const eventId = req.params.id;
+
+    db.run("DELETE FROM bookings WHERE event_id = ?", [eventId], (err) => {
+      if (err) {
+        console.error("Error deleting bookings:", err);
+      }
+      db.run("DELETE FROM events WHERE id = ?", [eventId], (err) => {
+        if (err) {
+          console.error("Error deleting event:", err);
+        }
+        res.redirect("/organiser");
+      });
+    });
+  }
+);
+
+// View event bookings (requires authentication + organiser role)
+router.get(
+  "/organiser/bookings/:id",
+  authenticateToken,
+  requireOrganiser,
+  (req, res) => {
+    const eventId = req.params.id;
+
+    db.get("SELECT * FROM events WHERE id = ?", [eventId], (err, event) => {
+      if (err || !event) {
+        return res.redirect("/organiser");
+      }
+      db.all(
+        "SELECT * FROM bookings WHERE event_id = ? ORDER BY booking_date DESC",
+        [eventId],
+        (err, bookings) => {
+          if (err) {
+            console.error(err);
+            bookings = [];
+          }
+          res.render("bookings", { event: event, bookings: bookings });
+        }
+      );
+    });
+  }
+);
 
 // Attendee page - for viewing and booking events (open to all, but enhanced for authenticated users)
 router.get("/attendee", (req, res) => {
@@ -113,8 +130,7 @@ router.get("/attendee", (req, res) => {
 // Book event (requires authentication for booking)
 router.post("/attendee/book/:id", authenticateToken, (req, res) => {
   const eventId = req.params.id;
-  const userId = req.user.userId;
-  console.log("Booking event:", eventId, "for user:", userId);
+  const userId = req.user.id;
 
   // Check if user already booked this event
   db.get(
@@ -140,12 +156,11 @@ router.post("/attendee/book/:id", authenticateToken, (req, res) => {
           db.run("BEGIN TRANSACTION");
 
           db.run(
-            "INSERT INTO bookings (event_id, user_id, user_name, user_email, booking_date) VALUES (?, ?, ?, ?, datetime('now'))",
-            [eventId, userId, req.user.name, req.user.email],
+            "INSERT INTO bookings (event_id, user_id, booking_date) VALUES (?, ?, datetime('now'))",
+            [eventId, userId],
             (err) => {
               if (err) {
                 db.run("ROLLBACK");
-                console.error("Error creating booking:", err);
                 return res.redirect("/attendee?error=booking_failed");
               }
 

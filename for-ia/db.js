@@ -22,6 +22,7 @@ function initializeDatabase() {
         name TEXT NOT NULL,
         email TEXT UNIQUE NOT NULL,
         password TEXT NOT NULL,
+        role TEXT NOT NULL CHECK(role IN ('organiser', 'attendee')) DEFAULT 'attendee',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
 
@@ -43,8 +44,6 @@ function initializeDatabase() {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         event_id INTEGER,
         user_id INTEGER,
-        user_name TEXT NOT NULL,
-        user_email TEXT NOT NULL,
         booking_date DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (event_id) REFERENCES events (id) ON DELETE CASCADE,
         FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,

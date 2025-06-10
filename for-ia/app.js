@@ -1,4 +1,5 @@
 const express = require("express");
+const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const path = require("path");
 const indexRouter = require("./routes/index");
@@ -7,7 +8,7 @@ const authRouter = require("./routes/auth");
 const app = express();
 
 app.set("view engine", "ejs");
-app.use(express.urlencoded({ extended: true })); // Use built-in parser instead of body-parser
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser()); // Add cookie parser middleware
 app.use(express.static(path.join(__dirname, "public")));
 

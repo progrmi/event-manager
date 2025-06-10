@@ -10,9 +10,11 @@ const JWT_SECRET =
 
 // Login page
 router.get("/login", (req, res) => {
-  // If already logged in, redirect to home
+  // If already logged in, redirect based on role
   if (req.user) {
-    return res.redirect("/");
+    return res.redirect(
+      req.user.role === "organiser" ? "/organiser" : "/attendee"
+    );
   }
   res.render("login", { message: null, formData: {} });
 });
@@ -71,8 +73,12 @@ router.post("/login", async (req, res) => {
           maxAge: 24 * 60 * 60 * 1000, // 24 hours
         });
 
-        // Redirect to home page
-        res.redirect("/");
+        // Redirect based on role
+        if (user.role === "organiser") {
+          res.redirect("/organiser");
+        } else {
+          res.redirect("/attendee");
+        }
       }
     );
   } catch (error) {
@@ -86,9 +92,11 @@ router.post("/login", async (req, res) => {
 
 // Register page
 router.get("/register", (req, res) => {
-  // If already logged in, redirect to home
+  // If already logged in, redirect
   if (req.user) {
-    return res.redirect("/");
+    return res.redirect(
+      req.user.role === "organiser" ? "/organiser" : "/attendee"
+    );
   }
   res.render("register", { message: null, formData: {} });
 });
@@ -170,8 +178,12 @@ router.post("/register", async (req, res) => {
             maxAge: 24 * 60 * 60 * 1000,
           });
 
-          // Redirect to home page
-          res.redirect("/");
+          // Redirect based on role
+          if (newUser.role === "organiser") {
+            res.redirect("/organiser");
+          } else {
+            res.redirect("/attendee");
+          }
         });
       }
     );

@@ -6,6 +6,7 @@ const JWT_SECRET =
 // Middleware to check if user is authenticated
 const authenticateToken = (req, res, next) => {
   const token = req?.cookies?.token || null;
+  console.log("Token in authenticateToken middleware:", token);
 
   if (!token) {
     return res.redirect("/auth/login");
@@ -13,6 +14,7 @@ const authenticateToken = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
+    console.log("Decoded token:", decoded);
     req.user = decoded;
     next();
   } catch (error) {
@@ -20,28 +22,6 @@ const authenticateToken = (req, res, next) => {
     res.clearCookie("token");
     return res.redirect("/auth/login");
   }
-};
-
-// Middleware to check if user is an organiser
-const requireOrganiser = (req, res, next) => {
-  if (!req.user || req.user.role !== "organiser") {
-    return res.status(403).render("error", {
-      message: "Access denied. Organiser role required.",
-      statusCode: 403,
-    });
-  }
-  next();
-};
-
-// Middleware to check if user is an attendee
-const requireAttendee = (req, res, next) => {
-  if (!req.user || req.user.role !== "attendee") {
-    return res.status(403).render("error", {
-      message: "Access denied. Attendee role required.",
-      statusCode: 403,
-    });
-  }
-  next();
 };
 
 // Middleware to add user info to all templates (optional authentication)
@@ -110,8 +90,6 @@ const optionalAuth = (req, res, next) => {
 
 module.exports = {
   authenticateToken,
-  requireOrganiser,
-  requireAttendee,
   addUserToLocals,
   redirectIfAuthenticated,
   optionalAuth,
