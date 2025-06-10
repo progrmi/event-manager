@@ -1,14 +1,32 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../db");
+const {
+  authenticateToken,
+  requireOrganiser,
+  addUserToLocals,
+} = require("../middleware/auth");
 
-// Home page - redirect to organiser page
+// Apply user info to all routes
+router.use(addUserToLocals);
+
+// Home page - redirect based on authentication status
 router.get("/", (req, res) => {
-  res.redirect("/organiser");
+  if (req.user) {
+    // Redirect based on user role
+    if (req.user.role === "organiser") {
+      res.redirect("/organiser");
+    } else {
+      res.redirect("/attendee");
+    }
+  } else {
+    // Not authenticated, redirect to login
+    res.redirect("/auth/login");
+  }
 });
 
-// Organiser page - for creating and managing events
-router.get("/organiser", (req, res) => {
+// Organiser page - for creating and managing events (requires authentication + organiser role)
+router.get("/organiser", authenticateToken, requireOrganiser, (req, res) => {
   db.all("SELECT * FROM events ORDER BY date ASC", (err, events) => {
     if (err) {
       console.error(err);
@@ -18,65 +36,81 @@ router.get("/organiser", (req, res) => {
   });
 });
 
-// Create new event
-router.post("/organiser/create", (req, res) => {
-  const { title, description, date, time, location, max_attendees } = req.body;
-  const stmt =
-    db.prepare(`INSERT INTO events (title, description, date, time, location, max_attendees) 
+// Create new event (requires authentication + organiser role)
+router.post(
+  "/organiser/create",
+  authenticateToken,
+  requireOrganiser,
+  (req, res) => {
+    const { title, description, date, time, location, max_attendees } =
+      req.body;
+    const stmt =
+      db.prepare(`INSERT INTO events (title, description, date, time, location, max_attendees) 
                           VALUES (?, ?, ?, ?, ?, ?)`);
 
-  stmt.run(
-    [title, description, date, time, location, max_attendees],
-    function (err) {
-      if (err) {
-        console.error("Error creating event:", err);
-      }
-      res.redirect("/organiser");
-    }
-  );
-  stmt.finalize();
-});
-
-// Delete event
-router.post("/organiser/delete/:id", (req, res) => {
-  const eventId = req.params.id;
-
-  db.run("DELETE FROM bookings WHERE event_id = ?", [eventId], (err) => {
-    if (err) {
-      console.error("Error deleting bookings:", err);
-    }
-    db.run("DELETE FROM events WHERE id = ?", [eventId], (err) => {
-      if (err) {
-        console.error("Error deleting event:", err);
-      }
-      res.redirect("/organiser");
-    });
-  });
-});
-
-// View event bookings (for organiser)
-router.get("/organiser/bookings/:id", (req, res) => {
-  const eventId = req.params.id;
-
-  db.get("SELECT * FROM events WHERE id = ?", [eventId], (err, event) => {
-    if (err || !event) {
-      return res.redirect("/organiser");
-    }
-    db.all(
-      "SELECT * FROM bookings WHERE event_id = ? ORDER BY booking_date DESC",
-      [eventId],
-      (err, bookings) => {
+    stmt.run(
+      [title, description, date, time, location, max_attendees],
+      function (err) {
         if (err) {
-          console.error(err);
-          bookings = [];
+          console.error("Error creating event:", err);
         }
-        res.render("bookings", { event: event, bookings: bookings });
+        res.redirect("/organiser");
       }
     );
-  });
-});
+    stmt.finalize();
+  }
+);
 
-// Attendee page - for viewing and booking events
+// Delete event (requires authentication + organiser role)
+router.post(
+  "/organiser/delete/:id",
+  authenticateToken,
+  requireOrganiser,
+  (req, res) => {
+    const eventId = req.params.id;
+
+    db.run("DELETE FROM bookings WHERE event_id = ?", [eventId], (err) => {
+      if (err) {
+        console.error("Error deleting bookings:", err);
+      }
+      db.run("DELETE FROM events WHERE id = ?", [eventId], (err) => {
+        if (err) {
+          console.error("Error deleting event:", err);
+        }
+        res.redirect("/organiser");
+      });
+    });
+  }
+);
+
+// View event bookings (requires authentication + organiser role)
+router.get(
+  "/organiser/bookings/:id",
+  authenticateToken,
+  requireOrganiser,
+  (req, res) => {
+    const eventId = req.params.id;
+
+    db.get("SELECT * FROM events WHERE id = ?", [eventId], (err, event) => {
+      if (err || !event) {
+        return res.redirect("/organiser");
+      }
+      db.all(
+        "SELECT * FROM bookings WHERE event_id = ? ORDER BY booking_date DESC",
+        [eventId],
+        (err, bookings) => {
+          if (err) {
+            console.error(err);
+            bookings = [];
+          }
+          res.render("bookings", { event: event, bookings: bookings });
+        }
+      );
+    });
+  }
+);
+
+// Attendee page - for viewing and booking events (open to all, but enhanced for authenticated users)
 router.get("/attendee", (req, res) => {
   db.all(
     `SELECT * FROM events 
@@ -93,52 +127,60 @@ router.get("/attendee", (req, res) => {
   );
 });
 
-// Book event
-router.post("/attendee/book/:id", (req, res) => {
+// Book event (requires authentication for booking)
+router.post("/attendee/book/:id", authenticateToken, (req, res) => {
   const eventId = req.params.id;
-  const { attendee_name, attendee_email } = req.body;
+  const userId = req.user.id;
 
+  // Check if user already booked this event
   db.get(
-    "SELECT * FROM events WHERE id = ? AND current_attendees < max_attendees",
-    [eventId],
-    (err, event) => {
-      if (err || !event) {
-        return res.redirect("/attendee?error=Event not available");
+    "SELECT * FROM bookings WHERE event_id = ? AND user_id = ?",
+    [eventId, userId],
+    (err, booking) => {
+      if (booking) {
+        return res.redirect("/attendee?error=already_booked");
       }
 
-      db.get(
-        "SELECT * FROM bookings WHERE event_id = ? AND attendee_email = ?",
-        [eventId, attendee_email],
-        (err, existingBooking) => {
-          if (existingBooking) {
-            return res.redirect(
-              "/attendee?error=You have already booked this event"
-            );
-          }
-
-          const stmt = db.prepare(
-            "INSERT INTO bookings (event_id, attendee_name, attendee_email) VALUES (?, ?, ?)"
-          );
-          stmt.run([eventId, attendee_name, attendee_email], function (err) {
-            if (err) {
-              console.error("Error creating booking:", err);
-              return res.redirect("/attendee?error=Booking failed");
-            }
-
-            db.run(
-              "UPDATE events SET current_attendees = current_attendees + 1 WHERE id = ?",
-              [eventId],
-              (err) => {
-                if (err) {
-                  console.error("Error updating attendee count:", err);
-                }
-                res.redirect("/attendee?success=Booking successful");
-              }
-            );
-          });
-          stmt.finalize();
+      // Check event capacity
+      db.get("SELECT * FROM events WHERE id = ?", [eventId], (err, event) => {
+        if (err || !event) {
+          return res.redirect("/attendee?error=event_not_found");
         }
-      );
+
+        if (event.current_attendees >= event.max_attendees) {
+          return res.redirect("/attendee?error=event_full");
+        }
+
+        // Create booking and update attendee count
+        db.serialize(() => {
+          db.run("BEGIN TRANSACTION");
+
+          db.run(
+            "INSERT INTO bookings (event_id, user_id, booking_date) VALUES (?, ?, datetime('now'))",
+            [eventId, userId],
+            (err) => {
+              if (err) {
+                db.run("ROLLBACK");
+                return res.redirect("/attendee?error=booking_failed");
+              }
+
+              db.run(
+                "UPDATE events SET current_attendees = current_attendees + 1 WHERE id = ?",
+                [eventId],
+                (err) => {
+                  if (err) {
+                    db.run("ROLLBACK");
+                    return res.redirect("/attendee?error=booking_failed");
+                  }
+
+                  db.run("COMMIT");
+                  res.redirect("/attendee?success=booked");
+                }
+              );
+            }
+          );
+        });
+      });
     }
   );
 });
