@@ -6,7 +6,7 @@ const JWT_SECRET =
 // Middleware to check if user is authenticated
 const authenticateToken = (req, res, next) => {
   const token = req?.cookies?.token || null;
-  console.log("Token in authenticateToken middleware:", token);
+  //console.log("Token in authenticateToken middleware:", token);
 
   if (!token) {
     return res.redirect("/auth/login");
@@ -14,7 +14,6 @@ const authenticateToken = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    console.log("Decoded token:", decoded);
     req.user = decoded;
     next();
   } catch (error) {

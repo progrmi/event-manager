@@ -7,6 +7,13 @@ package-lock.json
 .env.local
 .env.*.local
 
+# test files
+test/
+for-ia/
+event-manager.zip
+for-ia
+/for-ia
+for-ia/**
 # Logs
 logs
 *.log

@@ -1,39 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Event Manager - Organiser</title>
-    <link rel="stylesheet" href="/css/main.css" />
-    <script>
-      // Initialize theme before page load to prevent flash
-      (function () {
-        const savedTheme = localStorage.getItem("theme");
-        if (savedTheme === "dark") {
-          document.documentElement.setAttribute("data-theme", "dark");
-        }
-      })();
-    </script>
-  </head>
+  <%- include('partials/head') %>
   <body>
+    <!-- prettier-ignore -->
+    <%- include('partials/header', { pageClass: 'organiser', headerTitle: '🎫 Event Manager - Organiser Dashboard', headerSubtitle: 'Your Complete Event Management Solution' }) %>
     <div class="container">
-      <div class="header organiser">
-        <div class="header-controls">
-          <button class="theme-toggle" onclick="toggleTheme()">
-            <span id="theme-icon">🌙</span>
-            <span id="theme-text">Dark Mode</span>
-          </button>
-          <a href="/auth/logout" class="logout-btn"> 🚪 Logout </a>
-        </div>
-        <h1>Event Manager</h1>
-        <p>Organiser Dashboard</p>
-      </div>
-
-      <div class="nav-links">
-        <a href="/attendee" class="organiser">View Attendee Page</a>
-        <a href="/" class="organiser">Home Dashboard</a>
-      </div>
-
       <div class="form-section">
         <h2>Create New Event</h2>
         <form action="/organiser/create" method="POST">
@@ -114,6 +85,18 @@
                   "
                   >View Bookings</a
                 >
+                <a
+                  href="/organiser/edit/<%= event.id %>"
+                  class="btn"
+                  style="
+                    background-color: var(--warning-color);
+                    text-decoration: none;
+                    font-size: 0.9rem;
+                    padding: 8px 16px;
+                  "
+                >
+                  Edit
+                </a>
                 <form
                   action="/organiser/delete/<%= event.id %>"
                   method="POST"
@@ -165,73 +148,7 @@
         </div>
         <% } %>
       </div>
-      <footer class="footer">
-        <div class="footer-content">
-          <div class="footer-section">
-            <h3>About Event Manager</h3>
-            <p>
-              Your trusted platform for event planning and management. Create,
-              manage, and attend events with ease.
-            </p>
-          </div>
-          <div class="footer-section">
-            <h3>Quick Links</h3>
-            <ul class="footer-links">
-              <li><a href="/attendee">Events</a></li>
-              <li><a href="/organiser">Organiser Dashboard</a></li>
-            </ul>
-          </div>
-          <div class="footer-section">
-            <h3>Contact</h3>
-            <ul class="footer-links">
-              <li>
-                <a href="mailto:support@eventmanager.com"
-                  >support@eventmanager.com</a
-                >
-              </li>
-              <li><a href="tel:+1234567890">+1 (234) 567-890</a></li>
-            </ul>
-          </div>
-        </div>
-        <div class="footer-bottom">
-          <p>&copy; 2025 Event Manager. All rights reserved.</p>
-        </div>
-      </footer>
     </div>
-    <script>
-      // Theme toggle functionality (global)
-      function toggleTheme() {
-        try {
-          const html = document.documentElement;
-          const themeIcon = document.getElementById("theme-icon");
-          const themeText = document.getElementById("theme-text");
-          const isDark = html.getAttribute("data-theme") === "dark";
-
-          if (isDark) {
-            html.removeAttribute("data-theme");
-            localStorage.setItem("theme", "light");
-            if (themeIcon) themeIcon.textContent = "🌙";
-            if (themeText) themeText.textContent = "Dark Mode";
-          } else {
-            html.setAttribute("data-theme", "dark");
-            localStorage.setItem("theme", "dark");
-            if (themeIcon) themeIcon.textContent = "☀️";
-            if (themeText) themeText.textContent = "Light Mode";
-          }
-        } catch (error) {
-          console.error("Theme toggle failed:", error);
-        }
-      }
-      // Set initial theme icon and text on load
-      document.addEventListener("DOMContentLoaded", function () {
-        const savedTheme = localStorage.getItem("theme");
-        const themeIcon = document.getElementById("theme-icon");
-        const themeText = document.getElementById("theme-text");
-        if (savedTheme === "dark") {
-          if (themeIcon) themeIcon.textContent = "☀️";
-          if (themeText) themeText.textContent = "Light Mode";
-        }
-      });
-    </script>
+    <%- include('partials/footer') %> <%- include('partials/scripts') %>
   </body>
 </html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('partials/head') %>
+  <body>
+    <!-- prettier-ignore -->
+    <%- include('partials/header', { pageClass: 'organiser', headerTitle: '🎫 Event Manager - Profile', headerSubtitle: 'Manage Your Account Details' }) %>
+
+    <div class="container">
+      <% if (typeof message !== 'undefined' && message) { %>
+      <div class="alert alert-<%= message.type %>" style="margin-top: 2rem">
+        <%= message.text %>
+      </div>
+      <% } %>
+
+      <div class="form-section" style="margin-top: 2rem">
+        <h2>Update Your Information</h2>
+        <form action="/profile/update" method="POST" id="profile-form">
+          <div class="form-group">
+            <label for="email">Email Address (cannot be changed)</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value="<%= user.email %>"
+              readonly
+              disabled
+              style="background-color: var(--background-secondary)"
+            />
+          </div>
+          <div class="form-group">
+            <label for="name">Full Name</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value="<%= user.name %>"
+              required
+            />
+          </div>
+          <h3
+            style="
+              margin-top: 2rem;
+              margin-bottom: 1rem;
+              border-top: 1px solid var(--border-color);
+              padding-top: 1.5rem;
+            "
+          >
+            Update Password (optional)
+          </h3>
+          <div class="form-group">
+            <label for="password">New Password</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              minlength="6"
+              placeholder="Leave blank to keep current password"
+            />
+          </div>
+          <div class="form-group">
+            <label for="confirmPassword">Confirm New Password</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              minlength="6"
+              placeholder="Confirm new password"
+            />
+          </div>
+          <button type="submit" class="btn organiser">Update Profile</button>
+        </form>
+      </div>
+    </div>
+
+    <%- include('partials/footer') %> <%- include('partials/scripts') %>
+  </body>
+</html>

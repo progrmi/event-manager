@@ -28,6 +28,7 @@ function initializeDatabase() {
   // Events table
   db.run(`CREATE TABLE IF NOT EXISTS events (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        creator_id INTEGER NOT NULL,
         title TEXT NOT NULL,
         description TEXT,
         date TEXT NOT NULL,
@@ -35,14 +36,15 @@ function initializeDatabase() {
         location TEXT NOT NULL,
         max_attendees INTEGER NOT NULL,
         current_attendees INTEGER DEFAULT 0,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (creator_id) REFERENCES users (id) ON DELETE CASCADE
     )`);
 
   // Bookings table
   db.run(`CREATE TABLE IF NOT EXISTS bookings (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        event_id INTEGER,
-        user_id INTEGER,
+        event_id INTEGER NOT NULL,
+        user_id INTEGER NOT NULL,
         user_name TEXT NOT NULL,
         user_email TEXT NOT NULL,
         booking_date DATETIME DEFAULT CURRENT_TIMESTAMP,

@@ -1,0 +1,19 @@
+<!-- prettier-ignore -->
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>
+    <%= typeof title !== 'undefined' ? title + ' - Event Manager' : 'Event Manager' %>
+  </title>
+  <link rel="stylesheet" href="/css/main.css" />
+  <script>
+    // Initialize theme before page load to prevent flash
+    (function () {
+      const savedTheme = localStorage.getItem("theme");
+      if (savedTheme === "dark") {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    })();
+  </script>
+</head>

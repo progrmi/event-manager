@@ -1,24 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Event Bookings - <%= event.title %></title>
-    <link rel="stylesheet" href="/css/main.css" />
-    <script>
-      // Initialize theme before page load to prevent flash
-      (function () {
-        const savedTheme = localStorage.getItem("theme");
-        if (savedTheme === "dark") {
-          document.documentElement.setAttribute("data-theme", "dark");
-        }
-      })();
-    </script>
-  </head>
+  <%- include('partials/head') %>
   <body>
+    <!-- prettier-ignore -->
+    <%- include('partials/header', { pageClass: 'organiser', headerTitle: '🎫 Event Manager - Bookings', headerSubtitle: 'Manage Your Event Bookings' }) %>
     <div class="bookings-container">
       <div class="header organiser bookings">
         <div class="header-controls">
+          <a
+            href="/profile"
+            class="logout-btn"
+            style="background-color: var(--primary-color); border: none"
+            >👤 Profile</a
+          >
           <button class="theme-toggle" onclick="toggleTheme()">
             <span id="theme-icon">🌙</span>
             <span id="theme-text">Dark Mode</span>
@@ -133,73 +127,7 @@
         </table>
         <% } %>
       </div>
-      <footer class="footer">
-        <div class="footer-content">
-          <div class="footer-section">
-            <h3>About Event Manager</h3>
-            <p>
-              Your trusted platform for event planning and management. Create,
-              manage, and attend events with ease.
-            </p>
-          </div>
-          <div class="footer-section">
-            <h3>Quick Links</h3>
-            <ul class="footer-links">
-              <li><a href="/attendee">Events</a></li>
-              <li><a href="/organiser">Organiser Dashboard</a></li>
-            </ul>
-          </div>
-          <div class="footer-section">
-            <h3>Contact</h3>
-            <ul class="footer-links">
-              <li>
-                <a href="mailto:support@eventmanager.com"
-                  >support@eventmanager.com</a
-                >
-              </li>
-              <li><a href="tel:+1234567890">+1 (234) 567-890</a></li>
-            </ul>
-          </div>
-        </div>
-        <div class="footer-bottom">
-          <p>&copy; 2025 Event Manager. All rights reserved.</p>
-        </div>
-      </footer>
     </div>
-    <script>
-      // Theme toggle functionality (global)
-      function toggleTheme() {
-        try {
-          const html = document.documentElement;
-          const themeIcon = document.getElementById("theme-icon");
-          const themeText = document.getElementById("theme-text");
-          const isDark = html.getAttribute("data-theme") === "dark";
-
-          if (isDark) {
-            html.removeAttribute("data-theme");
-            localStorage.setItem("theme", "light");
-            if (themeIcon) themeIcon.textContent = "🌙";
-            if (themeText) themeText.textContent = "Dark Mode";
-          } else {
-            html.setAttribute("data-theme", "dark");
-            localStorage.setItem("theme", "dark");
-            if (themeIcon) themeIcon.textContent = "☀️";
-            if (themeText) themeText.textContent = "Light Mode";
-          }
-        } catch (error) {
-          console.error("Theme toggle failed:", error);
-        }
-      }
-      // Set initial theme icon and text on load
-      document.addEventListener("DOMContentLoaded", function () {
-        const savedTheme = localStorage.getItem("theme");
-        const themeIcon = document.getElementById("theme-icon");
-        const themeText = document.getElementById("theme-text");
-        if (savedTheme === "dark") {
-          if (themeIcon) themeIcon.textContent = "☀️";
-          if (themeText) themeText.textContent = "Light Mode";
-        }
-      });
-    </script>
+    <%- include('partials/footer') %> <%- include('partials/scripts') %>
   </body>
 </html>
