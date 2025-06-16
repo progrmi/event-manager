@@ -17,8 +17,7 @@
         class="brand-link"
         style="color: inherit; text-decoration: none"
       >
-        <span class="brand-text">Event</span>
-        <span class="brand-text">Manager</span>
+        <span class="brand-text"><%= siteSettings.site_name %></span>
       </a>
     </div>
 
@@ -28,21 +27,33 @@
 
     <ul class="nav-menu">
       <li class="nav-item">
-        <a href="/" class="nav-link active"> Home </a>
+        <a href="/" class="nav-link">Home</a>
       </li>
       <% if (user) { %>
       <li class="nav-item">
-        <a href="/organiser" class="nav-link"> Explore </a>
+        <a href="/organiser" class="nav-link">Organiser</a>
       </li>
       <li class="nav-item">
-        <a href="/profile" class="nav-link"> Profile </a>
+        <a href="/attendee" class="nav-link">Attendee</a>
       </li>
       <li class="nav-item">
-        <a href="/auth/logout" class="nav-link"> Logout </a>
+        <a href="/attendee/my-bookings" class="nav-link">My Bookings</a>
+      </li>
+      <li class="nav-item">
+        <a href="/profile" class="nav-link">Profile</a>
+      </li>
+      <li class="nav-item">
+        <a href="/settings" class="nav-link">Settings</a>
+      </li>
+      <li class="nav-item">
+        <a href="/auth/logout" class="nav-link">Logout</a>
       </li>
       <% } else { %>
       <li class="nav-item">
-        <a href="/auth/login" class="nav-link"> Login </a>
+        <a href="/auth/login" class="nav-link">Login</a>
+      </li>
+      <li class="nav-item">
+        <a href="/auth/register" class="nav-link">Register</a>
       </li>
       <% } %>
 

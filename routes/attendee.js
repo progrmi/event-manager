@@ -7,6 +7,7 @@ const { authenticateToken } = require("../middleware/auth");
 router.use(authenticateToken);
 
 router.get("/", attendeeController.getAvailableEvents);
+router.get("/my-bookings", attendeeController.getMyBookings);
 router.post("/book/:id", attendeeController.bookEvent);
 
 module.exports = router;

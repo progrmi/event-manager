@@ -2,27 +2,30 @@
 <html lang="en">
   <%- include('partials/head') %>
   <body>
-    <!-- prettier-ignore -->
     <%- include('partials/header') %>
     <div class="container">
       <div class="header attendee">
-        <h1>Available Events</h1>
-        <p>Browse and book your spot for upcoming events.</p>
+        <h1>My Booked Events</h1>
+        <p>A list of all the events you're scheduled to attend.</p>
       </div>
+
       <div class="events-section">
-        <% if (!events || events.length === 0) { %>
+        <% if (!bookings || bookings.length === 0) { %>
         <div class="no-events attendee">
-          <h3>No Events Available</h3>
-          <p>There are currently no upcoming events available for booking.</p>
+          <h3>You Haven't Booked Any Events Yet</h3>
+          <p>
+            Explore the available events and book your spot.
+            <a href="/attendee">Browse Events</a>
+          </p>
         </div>
         <% } else { %>
         <div class="events-grid">
-          <% events.forEach(event => { %>
+          <% bookings.forEach(booking => { %>
           <div class="event-card attendee">
             <div class="event-header attendee">
-              <div class="event-title"><%= event.title %></div>
-              <% if (event.description) { %>
-              <div class="event-description"><%= event.description %></div>
+              <div class="event-title"><%= booking.title %></div>
+              <% if (booking.description) { %>
+              <div class="event-description"><%= booking.description %></div>
               <% } %>
             </div>
 
@@ -30,7 +33,7 @@
               <div class="info-item attendee">
                 <span class="info-label attendee">📅 Date:</span>
                 <span
-                  ><%= new Date(event.date).toLocaleDateString('en-US', {
+                  ><%= new Date(booking.date).toLocaleDateString('en-US', {
                   weekday: 'long', year: 'numeric', month: 'long', day:
                   'numeric' }) %></span
                 >
@@ -39,40 +42,27 @@
                 <span class="info-label attendee">🕒 Time:</span>
                 <span
                   ><%= new Date('2000-01-01T' +
-                  event.time).toLocaleTimeString('en-US', { hour: 'numeric',
+                  booking.time).toLocaleTimeString('en-US', { hour: 'numeric',
                   minute: '2-digit', hour12: true }) %></span
                 >
               </div>
               <div class="info-item attendee">
                 <span class="info-label attendee">📍 Location:</span>
-                <span><%= event.location %></span>
+                <span><%= booking.location %></span>
               </div>
               <div class="info-item attendee">
                 <span class="info-label attendee">💰 Cost:</span>
                 <span
-                  ><%= event.cost > 0 ? '$' + event.cost.toFixed(2) : 'Free'
+                  ><%= booking.cost > 0 ? '$' + booking.cost.toFixed(2) : 'Free'
                   %></span
                 >
               </div>
             </div>
-
             <div class="event-capacity">
-              <div class="capacity-info">
-                <strong
-                  >Available Spots: <%= event.max_attendees -
-                  event.current_attendees %>/<%= event.max_attendees %></strong
-                >
-              </div>
-            </div>
-
-            <div class="booking-section">
-              <form
-                action="/attendee/book/<%= event.id %>"
-                method="POST"
-                class="booking-form attendee-form"
-              >
-                <button type="submit" class="btn attendee">Book Now</button>
-              </form>
+              <p>
+                You booked this event on <%= new
+                Date(booking.booking_date).toLocaleDateString() %>
+              </p>
             </div>
           </div>
           <% }); %>

@@ -28,6 +28,24 @@ exports.findAllByEventId = (eventId) => {
   });
 };
 
+// Find all events a user has booked
+exports.findAllByUserId = (userId) => {
+  return new Promise((resolve, reject) => {
+    const sql = `
+      SELECT 
+        e.id as event_id, e.title, e.description, e.date, e.time, e.location, e.cost,
+        b.id as booking_id, b.booking_date
+      FROM bookings b
+      JOIN events e ON b.event_id = e.id
+      WHERE b.user_id = ?
+      ORDER BY e.date ASC`;
+    db.all(sql, [userId], (err, rows) => {
+      if (err) reject(err);
+      resolve(rows);
+    });
+  });
+};
+
 // Create a new booking
 exports.create = ({ eventId, userId, name, email }) => {
   return new Promise((resolve, reject) => {

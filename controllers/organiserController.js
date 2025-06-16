@@ -21,12 +21,31 @@ exports.createEvent = async (req, res) => {
     const eventData = {
       ...req.body,
       creator_id: req.user.userId,
+      status: req.body.publish ? "published" : "draft", // Handle publish checkbox
     };
+    delete eventData.publish; // Clean up the object
     await eventModel.create(eventData);
-    res.redirect("/organiser");
+    res.redirect("/organiser?success=created");
   } catch (error) {
     console.error("Error creating event:", error);
     res.redirect("/organiser?error=creation_failed");
+  }
+};
+
+// Toggle an event's status between 'draft' and 'published'
+exports.toggleEventStatus = async (req, res) => {
+  try {
+    const eventId = req.params.id;
+    const event = await eventModel.findByIdAndCreator(eventId, req.user.userId);
+    if (!event) {
+      return res.redirect("/organiser?error=unauthorized_toggle");
+    }
+    const newStatus = event.status === "draft" ? "published" : "draft";
+    await eventModel.updateStatus(eventId, newStatus);
+    res.redirect("/organiser?success=status_updated");
+  } catch (error) {
+    console.error("Error toggling event status:", error);
+    res.redirect("/organiser?error=toggle_failed");
   }
 };
 

@@ -3,7 +3,7 @@
   <%- include('partials/head') %>
   <body>
     <!-- prettier-ignore -->
-    <%- include('partials/header', { pageClass: 'organiser', headerTitle: '🎫 Event Manager - Bookings', headerSubtitle: 'Manage Your Event Bookings' }) %>
+    <%- include('partials/header') %>
     <div class="bookings-container">
       <div class="header organiser bookings">
         <div class="header-controls">
@@ -15,7 +15,6 @@
           >
           <button class="theme-toggle" onclick="toggleTheme()">
             <span id="theme-icon">🌙</span>
-            <span id="theme-text">Dark Mode</span>
           </button>
           <a href="/auth/logout" class="logout-btn"> 🚪 Logout </a>
         </div>
@@ -25,7 +24,6 @@
 
       <div class="nav-links">
         <a href="/organiser" class="bookings">← Back to Dashboard</a>
-        <a href="/attendee" class="bookings">View Attendee Page</a>
       </div>
 
       <div class="event-info-section">
@@ -49,6 +47,13 @@
           <div class="info-item bookings">
             <span class="info-label organiser">📍 Location:</span>
             <span><%= event.location %></span>
+          </div>
+          <div class="info-item bookings">
+            <span class="info-label organiser">💰 Cost:</span>
+            <span
+              ><%= event.cost > 0 ? '$' + event.cost.toFixed(2) : 'Free'
+              %></span
+            >
           </div>
         </div>
 
@@ -91,7 +96,6 @@
         <div class="no-bookings">
           <h3>No Bookings Yet</h3>
           <p>This event hasn't received any bookings yet.</p>
-          <p>Share the attendee page link to start getting bookings!</p>
         </div>
         <% } else { %>
         <table class="bookings-table">

@@ -19,6 +19,8 @@ CREATE TABLE IF NOT EXISTS events (
     date TEXT NOT NULL,
     time TEXT NOT NULL,
     location TEXT NOT NULL,
+    cost REAL DEFAULT 0,
+    status TEXT NOT NULL DEFAULT 'draft',
     max_attendees INTEGER NOT NULL,
     current_attendees INTEGER DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -38,3 +40,15 @@ CREATE TABLE IF NOT EXISTS bookings (
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
     UNIQUE(event_id, user_id)
 );
+
+-- Site Settings table to store global configuration.
+CREATE TABLE IF NOT EXISTS site_settings (
+    setting_key TEXT PRIMARY KEY NOT NULL,
+    setting_value TEXT NOT NULL
+);
+
+-- Insert default settings if they don't already exist.
+INSERT OR IGNORE INTO site_settings (setting_key, setting_value) VALUES
+('site_name', 'Event Manager'),
+('welcome_title', 'Welcome Back!'),
+('welcome_subtitle', 'Choose how you''d like to interact with our event management system. Whether you''re organizing events or looking to attend them, we''ve got you covered.');

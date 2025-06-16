@@ -8,6 +8,7 @@ router.use(authenticateToken);
 
 router.get("/", organiserController.getOrganiserDashboard);
 router.post("/create", organiserController.createEvent);
+router.post("/status/:id", organiserController.toggleEventStatus);
 router.get("/edit/:id", organiserController.getEditEventForm);
 router.post("/update/:id", organiserController.updateEvent);
 router.post("/delete/:id", organiserController.deleteEvent);

@@ -314,6 +314,12 @@ body {
   grid-column: 1 / -1;
 }
 
+.form-group-inline {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 label {
   display: block;
   margin-bottom: 0.5rem;
@@ -325,9 +331,11 @@ input[type="text"],
 input[type="email"],
 input[type="password"],
 input[type="number"],
+input[type="tel"],
 input[type="date"],
 input[type="time"],
-textarea {
+textarea,
+select {
   width: 100%;
   padding: 12px;
   border: 2px solid var(--border-color);
@@ -433,6 +441,7 @@ input:-webkit-autofill {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  gap: 1rem;
 }
 .event-header.attendee {
   display: block;
@@ -443,6 +452,9 @@ input:-webkit-autofill {
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .event-description {
@@ -454,6 +466,7 @@ input:-webkit-autofill {
 .event-actions {
   display: flex;
   gap: 0.5rem;
+  flex-shrink: 0;
 }
 
 .event-info {
@@ -492,6 +505,21 @@ input:-webkit-autofill {
   padding: 1rem;
   border-radius: 6px;
   border-left: 4px solid var(--primary-color);
+}
+
+.status-badge {
+  padding: 0.25rem 0.6rem;
+  border-radius: 1rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: white;
+}
+.status-badge.published {
+  background-color: var(--success-color);
+}
+.status-badge.draft {
+  background-color: var(--text-secondary);
 }
 
 /* =============================================================================
@@ -746,7 +774,7 @@ input:-webkit-autofill {
 }
 
 .login-header h1 {
-  color: #2c3e50;
+  color: var(--text-secondary);
   margin-bottom: 0.5rem;
 }
 
@@ -768,7 +796,7 @@ input:-webkit-autofill {
 
 .form-group label {
   margin-bottom: 0.5rem;
-  color: #2c3e50;
+  color: var(--background-secondary);
   font-weight: 600;
 }
 
@@ -864,12 +892,12 @@ input:-webkit-autofill {
 }
 
 .register-header h1 {
-  color: #2c3e50;
+  color: var(--text-secondary);
   margin-bottom: 0.5rem;
 }
 
 .register-header p {
-  color: #6c757d;
+  color: var(--text-secondary);
   margin: 0;
 }
 
@@ -886,7 +914,7 @@ input:-webkit-autofill {
 
 .form-group label {
   margin-bottom: 0.5rem;
-  color: #2c3e50;
+  color: var(--text-secondary);
   font-weight: 600;
 }
 

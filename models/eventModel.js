@@ -44,6 +44,7 @@ exports.findAllAvailable = () => {
     db.all(
       `SELECT * FROM events 
        WHERE date >= date('now') 
+       AND status = 'published'
        AND current_attendees < max_attendees 
        ORDER BY date ASC`,
       (err, events) => {
@@ -63,14 +64,26 @@ exports.create = (eventData) => {
     date,
     time,
     location,
+    cost,
+    status,
     max_attendees,
   } = eventData;
   return new Promise((resolve, reject) => {
-    const sql = `INSERT INTO events (creator_id, title, description, date, time, location, max_attendees) 
-                 VALUES (?, ?, ?, ?, ?, ?, ?)`;
+    const sql = `INSERT INTO events (creator_id, title, description, date, time, location, cost, status, max_attendees) 
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     db.run(
       sql,
-      [creator_id, title, description, date, time, location, max_attendees],
+      [
+        creator_id,
+        title,
+        description,
+        date,
+        time,
+        location,
+        cost || 0,
+        status,
+        max_attendees,
+      ],
       function (err) {
         if (err) reject(err);
         resolve({ id: this.lastID });
@@ -81,18 +94,48 @@ exports.create = (eventData) => {
 
 // Update an existing event
 exports.update = (id, eventData) => {
-  const { title, description, date, time, location, max_attendees } = eventData;
+  const {
+    title,
+    description,
+    date,
+    time,
+    location,
+    cost,
+    status,
+    max_attendees,
+  } = eventData;
   return new Promise((resolve, reject) => {
-    const sql = `UPDATE events SET title = ?, description = ?, date = ?, time = ?, location = ?, max_attendees = ?
+    const sql = `UPDATE events SET title = ?, description = ?, date = ?, time = ?, location = ?, cost = ?, status = ?, max_attendees = ?
                      WHERE id = ?`;
     db.run(
       sql,
-      [title, description, date, time, location, max_attendees, id],
+      [
+        title,
+        description,
+        date,
+        time,
+        location,
+        cost || 0,
+        status,
+        max_attendees,
+        id,
+      ],
       (err) => {
         if (err) reject(err);
         resolve();
       }
     );
+  });
+};
+
+// Update an event's status
+exports.updateStatus = (id, status) => {
+  return new Promise((resolve, reject) => {
+    const sql = "UPDATE events SET status = ? WHERE id = ?";
+    db.run(sql, [status, id], (err) => {
+      if (err) reject(err);
+      resolve();
+    });
   });
 };
 

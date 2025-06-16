@@ -3,15 +3,11 @@
   <%- include('partials/head') %>
   <body>
     <!-- prettier-ignore -->
-    <%- include('partials/header', { pageClass: 'organiser', headerTitle: '🎫 Event Manager - Home ', headerSubtitle: 'Your Complete Event Management Solution' }) %>
+    <%- include('partials/header') %>
     <div class="container">
       <div class="welcome-section">
-        <h2 class="welcome-title">Welcome Back!</h2>
-        <p class="welcome-subtitle">
-          Choose how you'd like to interact with our event management system.
-          Whether you're organizing events or looking to attend them, we've got
-          you covered.
-        </p>
+        <h2 class="welcome-title"><%= siteSettings.welcome_title %></h2>
+        <p class="welcome-subtitle"><%= siteSettings.welcome_subtitle %></p>
 
         <div class="user-info" id="user-info">
           <h3>👤 Your Account</h3>
@@ -30,7 +26,7 @@
               attendees, and get insights into your event performance.
             </p>
             <a href="/organiser" class="nav-btn organiser">
-              🚀 Organiser Dashboard
+              🚀 Create Your Event
             </a>
           </div>
 

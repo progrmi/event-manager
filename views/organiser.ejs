@@ -3,7 +3,7 @@
   <%- include('partials/head') %>
   <body>
     <!-- prettier-ignore -->
-    <%- include('partials/header', { pageClass: 'organiser', headerTitle: '🎫 Event Manager - Organiser Dashboard', headerSubtitle: 'Your Complete Event Management Solution' }) %>
+    <%- include('partials/header') %>
     <div class="container">
       <div class="form-section">
         <h2>Create New Event</h2>
@@ -40,13 +40,32 @@
               />
             </div>
 
+            <div class="form-group">
+              <label for="cost">Cost ($):</label>
+              <input
+                type="number"
+                id="cost"
+                name="cost"
+                min="0"
+                step="0.01"
+                placeholder="0.00 for free events"
+              />
+            </div>
+
             <div class="form-group full-width">
               <label for="description">Description:</label>
               <textarea
                 id="description"
                 name="description"
+                rows="3"
                 placeholder="Optional event description..."
               ></textarea>
+            </div>
+            <div class="form-group full-width form-group-inline">
+              <input type="checkbox" id="publish" name="publish" />
+              <label for="publish" style="margin-bottom: 0"
+                >Publish Immediately</label
+              >
             </div>
           </div>
 
@@ -67,14 +86,36 @@
           <div class="event-card organiser">
             <div class="event-header organiser">
               <div>
-                <div class="event-title"><%= event.title %></div>
+                <div class="event-title">
+                  <%= event.title %>
+                  <span class="status-badge <%= event.status %>"
+                    ><%= event.status %></span
+                  >
+                </div>
                 <% if (event.description) { %>
-                <p style="color: #6c757d; margin-bottom: 1rem">
+                <p style="color: var(--text-secondary); margin-bottom: 1rem">
                   <%= event.description %>
                 </p>
                 <% } %>
               </div>
               <div class="event-actions organiser">
+                <form
+                  action="/organiser/status/<%= event.id %>"
+                  method="POST"
+                  style="display: inline"
+                >
+                  <button
+                    type="submit"
+                    class="btn"
+                    style="
+                      background-color: <%= event.status === 'draft' ? 'var(--success-color)' : 'var(--warning-color)' %>;
+                      font-size: 0.9rem;
+                      padding: 8px 16px;
+                    "
+                  >
+                    <%= event.status === 'draft' ? 'Publish' : 'Unpublish' %>
+                  </button>
+                </form>
                 <a
                   href="/organiser/bookings/<%= event.id %>"
                   class="btn organiser"
@@ -83,7 +124,7 @@
                     font-size: 0.9rem;
                     padding: 8px 16px;
                   "
-                  >View Bookings</a
+                  >Bookings</a
                 >
                 <a
                   href="/organiser/edit/<%= event.id %>"
@@ -126,6 +167,13 @@
               <div class="info-item">
                 <span class="info-label">📍 Location:</span>
                 <span><%= event.location %></span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">💰 Cost:</span>
+                <span
+                  ><%= event.cost > 0 ? '$' + event.cost.toFixed(2) : 'Free'
+                  %></span
+                >
               </div>
             </div>
 
