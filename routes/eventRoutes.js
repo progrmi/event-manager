@@ -3,6 +3,7 @@ const router = express.Router();
 const eventController = require("../controllers/eventController");
 
 router.get("/", eventController.listEvents);
+router.get('/drafts', eventController.listDrafts);
 router.get("/create", eventController.createEventForm);
 router.post("/create", eventController.createEvent);
 

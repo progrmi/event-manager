@@ -16,24 +16,30 @@ exports.createEventForm = (req, res) => {
 
 // Handle creation of a new event
 exports.createEvent = (req, res) => {
-  const newEvent = {
-    title: req.body.title,
-    description: req.body.description,
-    event_date: req.body.event_date,
-    location: req.body.location,
-    host_name: req.body.host_name,
-    host_description: req.body.host_description,
-    max_attendees: req.body.max_attendees,
-  };
-  Event.create(newEvent, (err) => {
-    if (err) {
-            console.error("Error creating event:", err);
-            req.flash('error_msg', 'Could not create the event. Please try again.');
+    const newEvent = {
+        title: req.body.title,
+        description: req.body.description,
+        event_date: req.body.event_date,
+        location: req.body.location,
+        host_name: req.body.host_name,
+        host_description: req.body.host_description,
+        max_attendees: req.body.max_attendees,
+        // The 'status' is determined by which button the user clicked
+        status: req.body.action === 'publish' ? 'published' : 'draft'
+    };
+    Event.create(newEvent, (err, result) => {
+        if (err) {
+            req.flash('error_msg', 'Could not save the event.');
             return res.redirect('/events/create');
         }
-    req.flash('success_msg', 'Event created successfully!');
-    res.redirect("/events");
-  });
+        if (newEvent.status === 'published') {
+            req.flash('success_msg', 'Event published successfully!');
+            res.redirect('/events');
+        } else {
+            req.flash('success_msg', 'Event saved as a draft.');
+            res.redirect('/events/drafts');
+        }
+    });
 };
 
 // Show details for a specific event
@@ -63,24 +69,36 @@ exports.editEventForm = (req, res) => {
 
 // Handle update of an existing event
 exports.updateEvent = (req, res) => {
-  const eventId = req.params.id;
-  const updatedEvent = {
-    title: req.body.title,
-    description: req.body.description,
-    event_date: req.body.event_date,
-    location: req.body.location,
-    host_name: req.body.host_name,
-    host_description: req.body.host_description,
-    max_attendees: req.body.max_attendees,
-  };
-  Event.update(eventId, updatedEvent, (err) => {
-       if (err) {
-            req.flash('error_msg', 'Could not update the event.');
-            return res.redirect(`/events/${eventId}/edit`);
+    const eventId = req.params.id;
+    const updatedEvent = {
+        title: req.body.title,
+        description: req.body.description,
+        event_date: req.body.event_date,
+        location: req.body.location,
+        host_name: req.body.host_name,
+        host_description: req.body.host_description,
+        max_attendees: req.body.max_attendees,
+        status: req.body.action === 'publish' ? 'published' : 'draft'
+    };
+    Event.update(eventId, updatedEvent, (err) => {
+        if (err) { /* ... */ }
+        if (updatedEvent.status === 'published') {
+            req.flash('success_msg', 'Event updated and published!');
+            res.redirect(`/events/${eventId}`);
+        } else {
+            req.flash('success_msg', 'Draft updated successfully.');
+            res.redirect('/events/drafts');
         }
-        req.flash('success_msg', 'Event updated successfully!'); // <-- Add this
-        res.redirect(`/events/${eventId}`);
-  });
+    });
+};
+exports.listDrafts = (req, res) => {
+    Event.findDrafts((err, events) => {
+        if (err) {
+            req.flash('error_msg', 'Could not retrieve drafts.');
+            return res.redirect('/');
+        }
+        res.render('events/drafts', { events, title: 'Draft Events' });
+    });
 };
 
 // Handle deletion of an event

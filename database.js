@@ -19,6 +19,7 @@ const initialize = () => {
             location TEXT NOT NULL,
             host_name TEXT,
             host_description TEXT,
+            status TEXT NOT NULL DEFAULT 'draft', 
             max_attendees INTEGER NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );

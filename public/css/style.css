@@ -850,3 +850,13 @@ html {
     padding: 1rem;
   }
 }
+.status-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #5a6268;
+    background-color: #e9ecef;
+    border-radius: 10px;
+    vertical-align: middle;
+}

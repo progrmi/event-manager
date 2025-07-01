@@ -13,9 +13,10 @@ CREATE TABLE IF NOT EXISTS events (
     description TEXT NOT NULL,
     event_date TEXT NOT NULL,
     location TEXT NOT NULL,
-      host_name TEXT,         
+    host_name TEXT,
     host_description TEXT,
     max_attendees INTEGER NOT NULL,
+    status TEXT NOT NULL DEFAULT 'draft', -- <-- Add this line
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

@@ -1,0 +1,20 @@
+<%- include('../partials/header') %>
+<div class="container">
+    <h1>Draft Events</h1>
+    <p>These events are not visible to the public. You can edit and publish them when you're ready.</p>
+    
+    <% if (events.length > 0) { %>
+        <ul class="event-list">
+            <% events.forEach(event => { %>
+                <li class="event-card">
+                    <h2><%= event.title %> <span class="status-badge">Draft</span></h2>
+                    <p><strong>Last Modified:</strong> <%= new Date(event.created_at).toLocaleDateString() %></p>
+                    <a href="/events/<%= event.id %>/edit" class="btn">Edit & Publish</a>
+                </li>
+            <% }) %>
+        </ul>
+    <% } else { %>
+        <p>You have no draft events.</p>
+    <% } %>
+</div>
+<%- include('../partials/footer') %>

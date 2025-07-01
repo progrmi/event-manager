@@ -60,7 +60,10 @@
         required
       />
     </div>
-    <button type="submit" class="btn">Update Event</button>
+   <div class="form-actions">
+    <button type="submit" name="action" value="draft" class="btn-secondary">Save Draft</button>
+    <button type="submit" name="action" value="publish" class="btn">Update and Publish</button>
+</div>
   </form>
 </div>
 <%- include('../partials/footer') %>
