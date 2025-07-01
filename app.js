@@ -5,6 +5,7 @@ const flash = require("connect-flash");
 const db = require("./database");
 const eventRoutes = require("./routes/eventRoutes");
 const attendeeRoutes = require("./routes/attendeeRoutes");
+const SQLiteStore = require('connect-sqlite3')(session);
 
 const app = express();
 const PORT = 3000;
@@ -15,13 +16,18 @@ db.initialize();
 // Middleware to parse form data
 app.use(express.urlencoded({ extended: true }));
 
-app.use(
-  session({
-    secret: "a_secret_key_to_sign_the_cookie", // Replace with a real secret in production
+app.use(session({
+    // Tell express-session to use the new store
+    store: new SQLiteStore({
+        db: 'gatherup.db',  // The name of your database file
+        dir: './',          // The directory where the db file is located
+        table: 'sessions'   // The name of the table to create/use
+    }),
+    secret: 'a_secret_key_to_sign_the_cookie', // IMPORTANT: Change this to a long, random string
     resave: false,
-    saveUninitialized: true,
-  })
-);
+    saveUninitialized: false, // Recommended for production to save space
+    cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 } // Example: 7 days
+}));
 
 app.use(flash());
 
