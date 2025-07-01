@@ -1,10 +1,10 @@
 <%- include('../partials/header') %>
 <div class="container form-container">
   <h1>Create a New Event</h1>
-  <form action="/events/create" method="POST">
+  <form action="/events/create" method="POST" id="event-form">
     <div class="form-group">
       <label for="title">Event Title</label>
-      <input type="text" id="title" name="title" required />
+      <input type="text" id="title" name="title"  />
     </div>
     <div class="form-group">
       <label for="description">Description</label>
@@ -12,16 +12,16 @@
         id="description"
         name="description"
         rows="4"
-        required
+        
       ></textarea>
     </div>
     <div class="form-group">
       <label for="event_date">Date</label>
-      <input type="date" id="event_date" name="event_date" required />
+      <input type="date" id="event_date" name="event_date"  />
     </div>
     <div class="form-group">
       <label for="location">Location</label>
-      <input type="text" id="location" name="location" required />
+      <input type="text" id="location" name="location"  />
     </div>
     <div class="form-group">
             <label for="host_name">Host Name</label>
@@ -38,7 +38,7 @@
         id="max_attendees"
         name="max_attendees"
         min="1"
-        required
+        
       />
     </div>
     <div class="form-actions">
@@ -47,4 +47,25 @@
 </div>
   </form>
 </div>
+<script>
+    document.getElementById('event-form').addEventListener('submit', function(e) {
+        // Find out which button was clicked to submit the form
+        const action = document.activeElement.value;
+
+        if (action === 'publish') {
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+            const event_date = document.getElementById('event_date').value;
+            const location = document.getElementById('location').value;
+            const max_attendees = document.getElementById('max_attendees').value;
+
+            if (!title || !description || !event_date || !location || !max_attendees) {
+                // Prevent the form submission
+                e.preventDefault(); 
+                alert('To publish an event, you must fill out all fields: Title, Description, Date, Location, and Max Guests.');
+            }
+        }
+        // If action is 'draft', we do nothing and let the form submit as is.
+    });
+</script>
 <%- include('../partials/footer') %>
