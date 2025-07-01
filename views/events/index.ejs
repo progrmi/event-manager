@@ -1,22 +1,77 @@
 <%- include('../partials/header') %>
 <div class="container">
-  <h1>Upcoming Events</h1>
+  <div class="events-header">
+    <h1>Upcoming Events</h1>
+    <p class="events-subtitle">Discover amazing events happening around you. Connect, learn, and have fun!</p>
+  </div>
+
   <% if (events.length > 0) { %>
   <ul class="event-list">
-    <% events.forEach(event => { %>
+    <% events.forEach(event => { 
+      const eventDate = new Date(event.event_date);
+      const today = new Date();
+      const isToday = eventDate.toDateString() === today.toDateString();
+      const isPast = eventDate < today && !isToday;
+      const statusClass = isToday ? 'status-today' : (isPast ? 'status-past' : 'status-upcoming');
+      const statusText = isToday ? 'Today' : (isPast ? 'Past Event' : 'Upcoming');
+    %>
     <li class="event-card">
+      <div class="date-badge <%= statusClass %>">
+        <%= statusText %>
+      </div>
+      
       <h2><%= event.title %></h2>
-      <p>
-        <strong>Date:</strong> <%= new
-        Date(event.event_date).toLocaleDateString() %>
-      </p>
-      <p><strong>Location:</strong> <%= event.location %></p>
-      <a href="/events/<%= event.id %>" class="btn">View Details</a>
+      
+      <div class="event-meta">
+        <div class="event-meta-item">
+          <span class="event-meta-label">📅 Date:</span>
+          <span><%= eventDate.toLocaleDateString('en-US', { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+          }) %></span>
+        </div>
+        
+        <div class="event-meta-item">
+          <span class="event-meta-label">📍 Location:</span>
+          <span><%= event.location %></span>
+        </div>
+        
+        <div class="event-meta-item">
+          <span class="event-meta-label">📝 Created:</span>
+          <span><%= new Date(event.created_at).toLocaleDateString('en-US', { 
+            month: 'short', 
+            day: 'numeric', 
+            year: 'numeric' 
+          }) %></span>
+        </div>
+      </div>
+
+      <% if (event.host_name || event.host_description) { %>
+      <div class="event-host">
+        <% if (event.host_name) { %>
+        <div class="event-host-name">🎭 Hosted by <%= event.host_name %></div>
+        <% } %>
+        <% if (event.host_description) { %>
+        <div class="event-host-description"><%= event.host_description %></div>
+        <% } %>
+      </div>
+      <% } %>
+
+      <a href="/events/<%= event.id %>" class="btn">
+        View Event Details →
+      </a>
     </li>
     <% }) %>
   </ul>
   <% } else { %>
-  <p>No events found. Why not <a href="/events/create">create one</a>?</p>
+  <div class="empty-state">
+    <div class="empty-state-icon">🎉</div>
+    <h3>No Events Yet</h3>
+    <p>Be the first to create an amazing event for your community!</p>
+    <a href="/events/create" class="btn">Create Your First Event</a>
+  </div>
   <% } %>
 </div>
 <%- include('../partials/footer') %>

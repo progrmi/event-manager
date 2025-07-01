@@ -21,10 +21,13 @@ exports.createEvent = (req, res) => {
     description: req.body.description,
     event_date: req.body.event_date,
     location: req.body.location,
+    host_name: req.body.host_name,
+    host_description: req.body.host_description,
     max_attendees: req.body.max_attendees,
   };
   Event.create(newEvent, (err) => {
     if (err) {
+            console.error("Error creating event:", err);
             req.flash('error_msg', 'Could not create the event. Please try again.');
             return res.redirect('/events/create');
         }
@@ -66,6 +69,8 @@ exports.updateEvent = (req, res) => {
     description: req.body.description,
     event_date: req.body.event_date,
     location: req.body.location,
+    host_name: req.body.host_name,
+    host_description: req.body.host_description,
     max_attendees: req.body.max_attendees,
   };
   Event.update(eventId, updatedEvent, (err) => {

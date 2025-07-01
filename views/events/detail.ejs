@@ -7,6 +7,12 @@
       %>
     </p>
     <p><strong>Location:</strong> <%= event.location %></p>
+     <% if (event.host_name) { %>
+            <p><strong>Host:</strong> <%= event.host_name %></p>
+        <% } %>
+        <% if (event.host_description) { %>
+            <p><em><%= event.host_description %></em></p>
+        <% } %>
     <p><%= event.description %></p>
     <p>
       <strong>Capacity:</strong> <%= currentAttendees %> / <%=

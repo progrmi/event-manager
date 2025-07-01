@@ -42,6 +42,14 @@
       />
     </div>
     <div class="form-group">
+            <label for="host_name">Host Name</label>
+            <input type="text" id="host_name" name="host_name" value="<%= event.host_name %>">
+        </div>
+        <div class="form-group">
+            <label for="host_description">Host Description</label>
+            <input type="text" id="host_description" name="host_description" value="<%= event.host_description %>">
+        </div>
+    <div class="form-group">
       <label for="max_attendees">Max Guests</label>
       <input
         type="number"

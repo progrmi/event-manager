@@ -1,0 +1,12 @@
+<%- include('../partials/header') %>
+<div class="container form-container">
+    <h1><%= title %></h1>
+    <form action="/settings" method="POST">
+        <div class="form-group">
+            <label for="site_name">Site Name</label>
+            <input type="text" id="site_name" name="site_name" value="<%= siteName %>" required>
+        </div>
+        <button type="submit" class="btn">Save Settings</button>
+    </form>
+</div>
+<%- include('../partials/footer') %>
