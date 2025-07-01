@@ -1,76 +1,92 @@
-const eventModel = require("../models/eventModel");
-const bookingModel = require("../models/bookingModel");
-const db = require("../db"); // Required for transaction
+const Attendee = require("../models/attendee");
+const Event = require("../models/event");
+const { Parser } = require("json2csv");
 
-// Show the attendee page with all available events
-exports.getAvailableEvents = async (req, res) => {
-  try {
-    const events = await eventModel.findAllAvailable();
-    res.render("attendee", {
-      title: "Available Events",
-      events,
-      message: null,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Error fetching available events.");
-  }
-};
+// Handle registration for an event
+exports.registerAttendee = (req, res) => {
+  const eventId = req.params.eventId;
+  const newAttendee = {
+    name: req.body.name,
+    email: req.body.email,
+    event_id: eventId,
+  };
 
-// Show events booked by the current user
-exports.getMyBookings = async (req, res) => {
-  try {
-    const bookings = await bookingModel.findAllByUserId(req.user.userId);
-    res.render("my-bookings", {
-      title: "My Booked Events",
-      bookings,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Error fetching your bookings.");
-  }
-};
-
-// Handle booking an event
-exports.bookEvent = async (req, res) => {
-  const eventId = req.params.id;
-  const { userId, name, email } = req.user;
-
-  try {
-    // Check if already booked
-    const existingBooking = await bookingModel.findByEventAndUser(
-      eventId,
-      userId
-    );
-    if (existingBooking) {
-      return res.redirect("/attendee?error=already_booked");
-    }
-
-    // Check event capacity and status
-    const event = await eventModel.findById(eventId);
-    if (!event || event.status !== "published") {
-      return res.redirect("/attendee?error=event_not_found");
-    }
-    if (event.current_attendees >= event.max_attendees) {
-      return res.redirect("/attendee?error=event_full");
-    }
-
-    // Use a transaction to ensure atomicity
-    db.serialize(async () => {
-      db.run("BEGIN TRANSACTION");
-      try {
-        await bookingModel.create({ eventId, userId, name, email });
-        await eventModel.incrementAttendees(eventId);
-        db.run("COMMIT");
-        res.redirect("/attendee/my-bookings?success=booked");
-      } catch (err) {
-        db.run("ROLLBACK");
-        console.error("Booking transaction failed:", err);
-        res.redirect("/attendee?error=booking_failed");
+  Attendee.countByEventId(eventId, (err, result) => {
+    if (err) return res.status(500).send("Error checking capacity.");
+    Event.findById(eventId, (err, event) => {
+      if (err || !event) return res.status(404).send("Event not found.");
+      if (result.count >= event.max_attendees) {
+        req.flash('error_msg', 'Sorry, this event is full.'); // <-- Add this
+        return res.status(400).send("Sorry, this event is full.");
       }
+      Attendee.create(newAttendee, (err) => {
+          if (err) {
+                if (err.code === 'SQLITE_CONSTRAINT') {
+                    req.flash('error_msg', 'This email is already registered for the event.'); // <-- Add this
+                } else {
+                    req.flash('error_msg', 'Something went wrong. Please try again.'); // <-- Add this
+                }
+                return res.redirect(`/events/${eventId}`);
+            }
+            req.flash('success_msg', 'You have successfully registered for the event!'); // <-- Add this
+            
+        res.redirect(`/events/${eventId}?registered=true`);
+      });
     });
-  } catch (error) {
-    console.error("Booking error:", error);
-    res.redirect("/attendee?error=booking_failed");
-  }
+  });
+};
+
+// List all attendees for a specific event
+exports.listAttendees = (req, res) => {
+  const eventId = req.params.eventId;
+  Attendee.findByEventId(eventId, (err, attendees) => {
+    if (err) return res.status(500).send("Error retrieving attendees");
+    const eventTitle =
+      attendees.length > 0 ? attendees[0].event_title : "Attendee List";
+    res.render("attendees/list", {
+      attendees,
+      eventId,
+      title: `Attendees for ${eventTitle}`,
+    });
+  });
+};
+
+// Handle attendee check-in
+exports.checkInAttendee = (req, res) => {
+  const { eventId, attendeeId } = req.params;
+  Attendee.checkIn(attendeeId, (err) => {
+    if (err) return res.status(500).send("Error checking in attendee");
+    res.redirect(`/attendees/list/${eventId}`);
+  });
+};
+exports.exportAttendees = (req, res) => {
+  const eventId = req.params.eventId;
+
+  Attendee.findByEventId(eventId, (err, attendees) => {
+    if (err) {
+      return res.status(500).send("Error retrieving attendees for export.");
+    }
+
+    // Define the columns for the CSV file
+    const fields = [
+      { label: "Name", value: "name" },
+      { label: "Email", value: "email" },
+      { label: "Status", value: "status" },
+    ];
+
+    // Format the data to be more user-friendly (e.g., 'Yes'/'No' for checked in)
+    const processedAttendees = attendees.map((att) => ({
+      name: att.name,
+      email: att.email,
+      status: att.checked_in ? "Checked In" : "Registered",
+    }));
+
+    const json2csvParser = new Parser({ fields });
+    const csv = json2csvParser.parse(processedAttendees);
+
+    // Set the HTTP headers to trigger a file download
+    res.header("Content-Type", "text/csv");
+    res.attachment(`event-${eventId}-attendees.csv`);
+    res.send(csv);
+  });
 };

@@ -1,61 +1,53 @@
 const express = require("express");
-const cookieParser = require("cookie-parser");
 const path = require("path");
-const { addUserToLocals } = require("./middleware/auth");
-const settingsModel = require("./models/settingsModel");
-
-// Import Routers
-const indexRouter = require("./routes/index");
-const authRouter = require("./routes/auth");
-const organiserRouter = require("./routes/organiser");
-const attendeeRouter = require("./routes/attendee");
-const profileRouter = require("./routes/profile");
-const settingsRouter = require("./routes/settings");
+const session = require("express-session");
+const flash = require("connect-flash");
+const db = require("./database");
+const eventRoutes = require("./routes/eventRoutes");
+const attendeeRoutes = require("./routes/attendeeRoutes");
 
 const app = express();
+const PORT = 3000;
 
-// View engine setup
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "ejs");
+// Initialize the database
+db.initialize();
 
-// Middleware
-app.use(express.json());
+// Middleware to parse form data
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
 
-// Custom middleware to add site settings and user info to all templates
-app.use(async (req, res, next) => {
-  try {
-    res.locals.siteSettings = await settingsModel.getAll();
-  } catch (error) {
-    console.error("Failed to load site settings:", error);
-    // Provide fallback defaults if DB fails
-    res.locals.siteSettings = {
-      site_name: "Event Manager",
-      welcome_title: "Welcome",
-      welcome_subtitle: "Your event platform.",
-    };
-  }
+app.use(
+  session({
+    secret: "a_secret_key_to_sign_the_cookie", // Replace with a real secret in production
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+
+app.use(flash());
+
+// Custom middleware to make flash messages available in all views
+app.use((req, res, next) => {
+  res.locals.success_msg = req.flash("success_msg");
+  res.locals.error_msg = req.flash("error_msg");
   next();
 });
-app.use(addUserToLocals);
+// Set view engine and views directory
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 
-// Mount Routers
-app.use("/", indexRouter);
-app.use("/auth", authRouter);
-app.use("/organiser", organiserRouter);
-app.use("/attendee", attendeeRouter);
-app.use("/profile", profileRouter);
-app.use("/settings", settingsRouter);
+// Serve static files (CSS, client-side JS)
+app.use(express.static(path.join(__dirname, "public")));
 
-// Basic error handling
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send("Something broke!");
+// Routes
+app.use("/events", eventRoutes);
+app.use("/attendees", attendeeRoutes);
+
+// Home route - redirect to the events list
+app.get("/", (req, res) => {
+  res.redirect("/events");
 });
 
-const PORT = process.env.PORT || 3000;
+// Start the server
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running at http://localhost:${PORT}`);
 });

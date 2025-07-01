@@ -1,0 +1,58 @@
+<!-- views/events/edit.ejs -->
+<%- include('../partials/header') %>
+<div class="container form-container">
+  <h1><%= title %></h1>
+  <form action="/events/<%= event.id %>/update" method="POST">
+    <div class="form-group">
+      <label for="title">Event Title</label>
+      <input
+        type="text"
+        id="title"
+        name="title"
+        value="<%= event.title %>"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea id="description" name="description" rows="4" required>
+<%= event.description %></textarea
+      >
+    </div>
+    <div class="form-group">
+      <label for="event_date">Date</label>
+      <% const dateForInput = new
+      Date(event.event_date).toISOString().split('T')[0]; %>
+      <input
+        type="date"
+        id="event_date"
+        name="event_date"
+        value="<%= dateForInput %>"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="location">Location</label>
+      <input
+        type="text"
+        id="location"
+        name="location"
+        value="<%= event.location %>"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="max_attendees">Max Guests</label>
+      <input
+        type="number"
+        id="max_attendees"
+        name="max_attendees"
+        value="<%= event.max_attendees %>"
+        min="1"
+        required
+      />
+    </div>
+    <button type="submit" class="btn">Update Event</button>
+  </form>
+</div>
+<%- include('../partials/footer') %>

@@ -1,0 +1,48 @@
+<%- include('../partials/header') %>
+<div class="container">
+  <h1><%= title %></h1>
+  <div class="page-actions">
+    <a href="/attendees/export/<%= eventId %>" class="btn">Download as CSV</a>
+  </div>
+  <% if (attendees.length > 0) { %>
+  <table class="attendee-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% attendees.forEach(attendee => { %>
+      <tr>
+        <td><%= attendee.name %></td>
+        <td><%= attendee.email %></td>
+        <td><%= attendee.checked_in ? 'Checked In' : 'Registered' %></td>
+        <td>
+          <% if (!attendee.checked_in) { %>
+          <form
+            action="/attendees/checkin/<%= eventId %>/<%= attendee.id %>"
+            method="POST"
+            style="display: inline"
+          >
+            <button type="submit" class="btn btn-small">Check In</button>
+          </form>
+          <% } %>
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+  <% } else { %>
+  <p>No attendees have registered for this event yet.</p>
+  <% } %>
+  <a
+    href="/events/<%= eventId %>"
+    class="btn-secondary"
+    style="margin-top: 20px"
+    >Back to Event</a
+  >
+</div>
+<%- include('../partials/footer') %>

@@ -1,32 +1,6 @@
-<footer class="footer">
-  <div class="footer-content">
-    <div class="footer-section">
-      <h3>About <%= siteSettings.site_name %></h3>
-      <p><%= siteSettings.footer_bio %></p>
-    </div>
-    <div class="footer-section">
-      <h3>Quick Links</h3>
-      <ul class="footer-links">
-        <li><a href="/attendee">Events</a></li>
-        <li><a href="/organiser">My Events</a></li>
-        <li><a href="/profile">Profile</a></li>
-      </ul>
-    </div>
-    <div class="footer-section">
-      <h3>Contact</h3>
-      <ul class="footer-links">
-        <li>
-          <a href="mailto:<%= siteSettings.email %>"
-            ><%= siteSettings.email %></a
-          >
-        </li>
-        <li>
-          <a href="tel:<%= siteSettings.phone %>"><%= siteSettings.phone %></a>
-        </li>
-      </ul>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <p>© 2025 <%= siteSettings.site_name %>. All rights reserved.</p>
-  </div>
-</footer>
+    </main>
+    <footer>
+        <p>© <%= new Date().getFullYear() %> GatherUp. The Simple Event Planner.</p>
+    </footer>
+</body>
+</html>

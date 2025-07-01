@@ -1,0 +1,55 @@
+<%- include('../partials/header') %>
+<div class="container">
+  <div class="event-detail">
+    <h1><%= event.title %></h1>
+    <p>
+      <strong>Date:</strong> <%= new Date(event.event_date).toLocaleDateString()
+      %>
+    </p>
+    <p><strong>Location:</strong> <%= event.location %></p>
+    <p><%= event.description %></p>
+    <p>
+      <strong>Capacity:</strong> <%= currentAttendees %> / <%=
+      event.max_attendees %>
+    </p>
+    <p><strong>Spots Left:</strong> <%= spotsLeft %></p>
+
+    <!-- All action buttons are now grouped here -->
+    <div class="event-actions">
+      <a href="/attendees/list/<%= event.id %>" class="btn-secondary"
+        >View Attendee List</a
+      >
+      <a href="/events/<%= event.id %>/edit" class="btn">Edit Event</a>
+      <form
+        action="/events/<%= event.id %>/delete"
+        method="POST"
+        onsubmit="return confirm('Are you sure you want to delete this event? This cannot be undone.');"
+        style="display: inline"
+      >
+        <button type="submit" class="btn btn-danger">Delete Event</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- The registration form remains separate -->
+  <div class="form-container registration-form">
+    <% if (spotsLeft > 0) { %>
+    <h2>Register for this Event</h2>
+    <form action="/attendees/register/<%= event.id %>" method="POST">
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" name="name" required />
+      </div>
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" required />
+      </div>
+      <button type="submit" class="btn">RSVP Now</button>
+    </form>
+    <% } else { %>
+    <h2>Registration is Full</h2>
+    <p>This event has reached its maximum capacity.</p>
+    <% } %>
+  </div>
+</div>
+<%- include('../partials/footer') %>

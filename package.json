@@ -1,27 +1,31 @@
 {
-  "name": "event-manager",
+  "name": "cm2040_template",
   "version": "1.0.0",
-  "description": "A web-based event management system for organizing and booking events",
+  "description": "A template for the mid-term assignment",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build-db": "cat db_schema.sql | sqlite3 events.db #build anew database from the sql file",
-    "clean-db": "rm events.db #remove the old database",
-    "build-db-win": "sqlite3 events.db < db_schema.sql",
-    "clean-db-win": "del events.db"
+    "build-db": "cat db_schema.sql | sqlite3 database.db #build anew database from the sql file",
+    "clean-db": "rm database.db #remove the old database",
+    "build-db-win": "sqlite3 database.db < db_schema.sql",
+    "clean-db-win": "del database.db",
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
   "author": "Simon Katan",
   "license": "ISC",
   "dependencies": {
-    "bcryptjs": "^3.0.2",
     "body-parser": "^2.2.0",
-    "cookie-parser": "^1.4.7",
-    "ejs": "^3.1.10",
-    "express": "^5.1.0",
-    "jsonwebtoken": "^9.0.2",
-    "sqlite3": "^5.1.7"
+    "connect-flash": "^0.1.1",
+    "ejs": "^3.1.8",
+    "express": "^4.18.2",
+    "express-session": "^1.18.1",
+    "json2csv": "6.0.0-alpha.2",
+    "sqlite3": "^5.1.2"
+  },
+  "engines": {
+    "npm": ">=8.0.0",
+    "node": ">=16.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
